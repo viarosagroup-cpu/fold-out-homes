@@ -172,6 +172,11 @@
     font-size: 0.95rem;
     font-weight: 600;
   }
+  .section-sub-note {
+    margin: 0.2rem 0 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
   .nav-buttons {
     display: flex;
     justify-content: space-between;
@@ -330,6 +335,49 @@
   }
   .option-card.style-card .card-body { padding: 0.75rem 0.85rem 0.9rem; }
   .option-card.style-card.selected img { filter: brightness(0.97); }
+  .option-card.best-seller-card {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(220px, 340px) 1fr;
+    align-items: stretch;
+  }
+  .option-card.best-seller-card img {
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    object-fit: cover;
+    border-radius: 8px 0 0 8px;
+  }
+  .option-card.best-seller-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 1.3rem;
+  }
+  .option-card.best-seller-card h3 { font-size: 1.25rem; }
+  .best-seller-badge {
+    display: inline-block;
+    background: #e8b923;
+    color: #1a1a1a;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    margin-bottom: 0.45rem;
+    width: fit-content;
+  }
+  @media (max-width: 640px) {
+    .option-card.best-seller-card {
+      grid-template-columns: 1fr;
+    }
+    .option-card.best-seller-card img {
+      height: 160px;
+      min-height: unset;
+      border-radius: 8px 8px 0 0;
+    }
+  }
   .gallery-strip {
     margin-bottom: 1.1rem;
   }
@@ -399,20 +447,21 @@
   <!-- STEP 1: Model / Style -->
   <div class="step-panel active" data-step="1">
     <h2 class="step-title">1. Choose Your Model Style</h2>
-    <p class="step-desc"><strong>Click the style that best matches what you want.</strong> These are the 6 main styles we build.</p>
+    <p class="step-desc"><strong>Click the style that best matches what you want.</strong> Our best seller, plus 5 more styles we build.</p>
     <div class="option-grid">
+      <div class="option-card style-card best-seller-card" data-group="model" data-value="The Pioneer">
+        <img src="style-best-seller.jpg" alt="The Pioneer — our best-selling model, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <span class="best-seller-badge">Best Seller</span>
+          <h3>The Pioneer</h3>
+        <p>Our most popular model. Full-glass bifold entry, clean white finish, and a folding footprint that sets up fast on any site.</p>
+              </div>
+      </div>
       <div class="option-card style-card" data-group="model" data-value="Modern Porch Style">
         <img src="style-modern-porch.jpg" alt="Modern Porch Style — real Fold Out Homes photo" loading="lazy">
         <div class="card-body">
           <h3>Modern Porch Style</h3>
         <p>Stylish contemporary design with spacious covered deck. Great for homes, offices or guest spaces.</p>
-              </div>
-      </div>
-      <div class="option-card style-card" data-group="model" data-value="Container Style">
-        <img src="style-container.jpg" alt="Container Style — real Fold Out Homes photo" loading="lazy">
-        <div class="card-body">
-          <h3>Container Style</h3>
-        <p>Sleek durable container look with full-glass folding entry. Our $27,990 base model. Ideal for offices, rentals and custom living spaces.</p>
               </div>
       </div>
       <div class="option-card style-card" data-group="model" data-value="Classic Porch Style">
@@ -481,8 +530,12 @@
   <!-- STEP 3: Layout -->
   <div class="step-panel" data-step="3">
     <h2 class="step-title">3. Floor Plan Layout</h2>
-    <p class="step-desc"><strong>Click a layout</strong>. Exact plans confirmed with order.</p>
-    <div class="option-grid" id="layoutOptions"></div>
+    <p class="step-desc" id="layoutStepDesc">Tell us roughly what you need. Exact plans are confirmed with our team once we have your details.</p>
+    <div class="option-grid" id="layoutOptions" style="display:none;"></div>
+    <div class="form-group" id="layoutNotesWrap">
+      <label for="layoutNotes">Preferred layout / room count</label>
+      <textarea id="layoutNotes" placeholder="e.g. 2 bedrooms + open plan living and kitchen, or describe what matters most to you"></textarea>
+    </div>
     <div class="nav-buttons">
       <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
       <button class="btn-primary" onclick="nextStep()" id="next3" disabled>Next -&gt;</button>
@@ -531,11 +584,31 @@
     <h2 class="step-title">5. Kitchen</h2>
     <p class="step-desc">Start with the basic package, then choose upgrades if you want them.</p>
 
-    <div class="section-label">Basic Configuration (included)</div>
+    <div class="section-label">Kitchen Layout</div>
     <div class="option-grid" style="margin-bottom:1.1rem;">
-      <div class="option-card selected" data-group="kitchenBase" data-value="Basic: L-shaped marble + SS sink + induction">
-        <h3>Basic Kitchen</h3>
-        <p>L-shaped marble countertop + stainless steel sink + induction cooker</p>
+      <div class="option-card style-card" data-group="kitchenBase" data-value="Left corner kitchen">
+        <img src="kitchen-left-corner.jpg" alt="Left corner kitchen layout, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Left Corner</h3><p>L-shaped bench along the left wall into the corner.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="kitchenBase" data-value="U-shape kitchen">
+        <img src="kitchen-u-shape.jpg" alt="U-shape kitchen layout, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>U-Shape</h3><p>Bench wraps three walls for maximum counter and storage space.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="kitchenBase" data-value="Right corner kitchen">
+        <img src="kitchen-right-corner.jpg" alt="Right corner kitchen layout, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Right Corner</h3><p>L-shaped bench along the right wall into the corner.</p></div>
+      </div>
+    </div>
+
+    <div class="section-label">Cabinet Finish</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="kitchenFinish" data-value="Gloss White">
+        <div class="color-swatch" style="background:#fdfdfd; border:1px solid #ddd;"></div>
+        <h3>Gloss White</h3>
+      </div>
+      <div class="option-card" data-group="kitchenFinish" data-value="Matt White">
+        <div class="color-swatch" style="background:#f2f1ec; border:1px solid #ddd;"></div>
+        <h3>Matt White</h3>
       </div>
     </div>
 
@@ -545,10 +618,6 @@
         <h3>Hanging Cabinet</h3>
         <p>Extra upper storage</p>
       </div>
-      <div class="option-card multi" data-group="kitchenUpgrade" data-value="U-shaped marble">
-        <h3>U-shaped Marble</h3>
-        <p>Upgrade to U-shaped layout</p>
-      </div>
       <div class="option-card multi" data-group="kitchenUpgrade" data-value="UV board">
         <h3>UV Board</h3>
         <p>Premium UV wall panels in kitchen</p>
@@ -557,35 +626,92 @@
         <h3>Advanced Washing Sink</h3>
         <p>Upgraded sink package</p>
       </div>
+      <div class="option-card style-card multi" data-group="kitchenUpgrade" data-value="Induction cooktop">
+        <img src="kitchen-induction-cooktop.jpg" alt="Induction cooktop, 4-zone, real Fold Out Homes product photo" loading="lazy">
+        <div class="card-body"><h3>Induction Cooktop</h3><p>4-zone induction cooktop.</p></div>
+      </div>
       <div class="option-card multi" data-group="kitchenUpgrade" data-value="None - keep basic only">
         <h3>None</h3>
         <p>Keep basic kitchen only</p>
       </div>
     </div>
 
-    <div class="section-label">Benchtop Colour Preference</div>
-    <div class="option-grid">
-      <div class="option-card" data-group="benchtop" data-value="YL-4003 Pure White">
-        <div class="color-swatch" style="background:#f0f0f0;"></div>
-        <h3>YL-4003</h3>
-        <p>Pure White</p>
+    <div class="section-label">UV Board Finish (if selected above)</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="White Marble, matte">
+        <img src="uv-white-marble-matte.jpg" alt="UV board finish, white marble matte, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>White Marble</h3><p>Matte finish, grey veining.</p></div>
       </div>
-      <div class="option-card" data-group="benchtop" data-value="YL-1001 Jade Stone">
-        <div class="color-swatch" style="background:#e8e4dc;"></div>
-        <h3>YL-1001</h3>
-        <p>Jade Stone</p>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="White Marble, gloss">
+        <img src="uv-white-marble-gloss.jpg" alt="UV board finish, white marble gloss, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>White Marble</h3><p>Gloss finish, grey veining.</p></div>
       </div>
-      <div class="option-card" data-group="benchtop" data-value="YL-7608 Carrara Marble">
-        <div class="color-swatch" style="background:#f5f5f5;"></div>
-        <h3>YL-7608</h3>
-        <p>Carrara Marble</p>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Warm White Marble">
+        <img src="uv-warm-white-marble.jpg" alt="UV board finish, warm white marble, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Warm White Marble</h3><p>White base with soft tan veining.</p></div>
       </div>
-      <div class="option-card" data-group="benchtop" data-value="Other / Custom">
-        <div class="color-swatch" style="background:#ccc;"></div>
-        <h3>Other</h3>
-        <p>Note in comments</p>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Tianshan White Jade">
+        <img src="uv-tianshan-white-jade.jpg" alt="UV board finish, Tianshan White Jade marble, real supplier photo" loading="lazy">
+        <div class="card-body"><h3>Tianshan White Jade</h3><p>White marble with fine tan veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Plain White">
+        <img src="uv-plain-white.jpg" alt="UV board finish, plain white, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Plain White</h3><p>Solid colour, no veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Golden Sand Marble">
+        <img src="uv-golden-sand-marble.jpg" alt="UV board finish, golden sand marble, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Golden Sand Marble</h3><p>Warm beige/tan tone marble look.</p></div>
       </div>
     </div>
+
+    <div class="section-label">Benchtop Material & Colour</div>
+    <div class="option-grid">
+      <div class="option-card style-card" data-group="benchtop" data-value="Stainless Steel">
+        <img src="kitchen-stainless-steel.jpg" alt="Full stainless steel benchtop kitchen, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Stainless Steel</h3><p>Full stainless steel benchtop and splashback, one continuous piece.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6926 - Beige Terrazzo">
+        <img src="bench-YL6926.jpg" alt="Stone benchtop YL-6926, beige terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6926</h3><p>Beige terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6937 - Light Grey Terrazzo">
+        <img src="bench-YL6937.jpg" alt="Stone benchtop YL-6937, light grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6937</h3><p>Light grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6947 - Grey Terrazzo">
+        <img src="bench-YL6947.jpg" alt="Stone benchtop YL-6947, grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6947</h3><p>Grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6905 - Warm White Terrazzo">
+        <img src="bench-YL6905.jpg" alt="Stone benchtop YL-6905, warm white terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6905</h3><p>Warm white terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6932 - Grey Stone">
+        <img src="bench-YL6932.jpg" alt="Stone benchtop YL-6932, mixed grey stone-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6932</h3><p>Mixed light/dark grey stone-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6908 - Beige/Grey Terrazzo">
+        <img src="bench-YL6908.jpg" alt="Stone benchtop YL-6908, beige-grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6908</h3><p>Beige-grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6902 - Warm Grey Terrazzo">
+        <img src="bench-YL6902.jpg" alt="Stone benchtop YL-6902, warm grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6902</h3><p>Warm grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6915 - White Terrazzo, fine speckle">
+        <img src="bench-YL6915.jpg" alt="Stone benchtop YL-6915, white fine-speckle terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6915</h3><p>White, fine speckle.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6919 - White Terrazzo, coarse fleck">
+        <img src="bench-YL6919.jpg" alt="Stone benchtop YL-6919, white coarse-fleck terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6919</h3><p>White, coarse fleck.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-1001 - White Jade-effect">
+        <img src="bench-YL1001.jpg" alt="Stone benchtop YL-1001, white jade-effect quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-1001</h3><p>White jade-effect (larger white/grey chips).</p></div>
+      </div>
+    </div>
+    <p class="section-sub-note">Stone benchtops shown are quartz, 15mm. If your preferred code isn't shown, note it in comments and we'll confirm availability.</p>
 
     <div class="nav-buttons">
       <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
@@ -606,27 +732,31 @@
       </div>
     </div>
 
-    <div class="section-label">Bathroom Shape</div>
+    <div class="section-label">Bathroom Size</div>
     <div class="option-grid" style="margin-bottom:1.1rem;">
-      <div class="option-card" data-group="bathroomShape" data-value="Half round bathroom">
-        <h3>Half Round</h3>
-        <p>Curved glass shower</p>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Standard bathroom">
+        <img src="bathroom-standard.jpg" alt="Standard bathroom, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Standard</h3><p>Glass shower, vanity and sink, toilet.</p></div>
       </div>
-      <div class="option-card" data-group="bathroomShape" data-value="Rectangular bathroom">
-        <h3>Rectangular</h3>
-        <p>Square shower enclosure</p>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Upgraded bathroom, grey stone">
+        <img src="bathroom-upgraded-grey-stone.jpg" alt="Upgraded bathroom, grey stone finish, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Upgraded — Grey Stone</h3><p>650mm longer, larger basin, space for a washing machine under the sink.</p></div>
       </div>
-      <div class="option-card" data-group="bathroomShape" data-value="Walk-in / open">
-        <h3>Walk-in / Open</h3>
-        <p>Modern wet-room style</p>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Upgraded bathroom, white marble">
+        <img src="bathroom-upgraded-white-marble.jpg" alt="Upgraded bathroom, white marble finish, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Upgraded — White Marble</h3><p>650mm longer, larger basin, space for a washing machine under the sink.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Upgraded bathroom, dark charcoal">
+        <img src="bathroom-upgraded-dark-charcoal.jpg" alt="Upgraded bathroom, dark charcoal finish, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Upgraded — Dark Charcoal</h3><p>650mm longer, larger basin, space for a washing machine under the sink.</p></div>
       </div>
     </div>
 
     <div class="section-label">Bathroom Upgrades</div>
     <div class="option-grid">
-      <div class="option-card multi" data-group="bathroomUpgrade" data-value="Water heater">
-        <h3>Water Heater</h3>
-        <p>Add hot water unit</p>
+      <div class="option-card style-card multi" data-group="bathroomUpgrade" data-value="Water heater">
+        <img src="water-heater.jpg" alt="Electric instant hot water system, real Fold Out Homes product photo" loading="lazy">
+        <div class="card-body"><h3>Water Heater</h3><p>Electric instant hot water system.</p></div>
       </div>
       <div class="option-card multi" data-group="bathroomUpgrade" data-value="UV board">
         <h3>UV Board</h3>
@@ -639,6 +769,50 @@
       <div class="option-card multi" data-group="bathroomUpgrade" data-value="None - keep basic only">
         <h3>None</h3>
         <p>Keep basic only</p>
+      </div>
+    </div>
+
+    <div class="section-label">Bathroom Stone Bench (vanity top, if upgrading)</div>
+    <div class="option-grid">
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6926 - Beige Terrazzo">
+        <img src="bench-YL6926.jpg" alt="Bathroom stone bench YL-6926, beige terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6926</h3><p>Beige terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6937 - Light Grey Terrazzo">
+        <img src="bench-YL6937.jpg" alt="Bathroom stone bench YL-6937, light grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6937</h3><p>Light grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6947 - Grey Terrazzo">
+        <img src="bench-YL6947.jpg" alt="Bathroom stone bench YL-6947, grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6947</h3><p>Grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6905 - Warm White Terrazzo">
+        <img src="bench-YL6905.jpg" alt="Bathroom stone bench YL-6905, warm white terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6905</h3><p>Warm white terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6932 - Grey Stone">
+        <img src="bench-YL6932.jpg" alt="Bathroom stone bench YL-6932, mixed grey stone-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6932</h3><p>Mixed light/dark grey stone-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6908 - Beige/Grey Terrazzo">
+        <img src="bench-YL6908.jpg" alt="Bathroom stone bench YL-6908, beige-grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6908</h3><p>Beige-grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6902 - Warm Grey Terrazzo">
+        <img src="bench-YL6902.jpg" alt="Bathroom stone bench YL-6902, warm grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6902</h3><p>Warm grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6915 - White Terrazzo, fine speckle">
+        <img src="bench-YL6915.jpg" alt="Bathroom stone bench YL-6915, white fine-speckle terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6915</h3><p>White, fine speckle.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6919 - White Terrazzo, coarse fleck">
+        <img src="bench-YL6919.jpg" alt="Bathroom stone bench YL-6919, white coarse-fleck terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6919</h3><p>White, coarse fleck.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-1001 - White Jade-effect">
+        <img src="bench-YL1001.jpg" alt="Bathroom stone bench YL-1001, white jade-effect quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-1001</h3><p>White jade-effect (larger white/grey chips).</p></div>
       </div>
     </div>
 
@@ -663,36 +837,16 @@
         <p>Smooth finish - wide colour range</p>
       </div>
     </div>
-    <div class="section-label">Colour Family</div>
-    <div class="option-grid">
-      <div class="option-card" data-group="exteriorColour" data-value="White / Angel White">
-        <div class="color-swatch" style="background:#f5f5f5;"></div>
-        <h3>White / Angel White</h3>
+    <div class="section-label">Exterior Colour / Finish</div>
+    <p class="section-sub-note">We offer a wide range of exterior cladding colours and finishes — close to any colour is possible. If you know the product code, note it below; otherwise just describe the colour or look you want and we'll confirm exact availability with you.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="exteriorCode">Product code (if known)</label>
+        <input type="text" id="exteriorCode" placeholder="e.g. L-017">
       </div>
-      <div class="option-card" data-group="exteriorColour" data-value="Grey / Charcoal">
-        <div class="color-swatch" style="background:#6b6b6b;"></div>
-        <h3>Grey / Charcoal</h3>
-      </div>
-      <div class="option-card" data-group="exteriorColour" data-value="Wood / Timber">
-        <div class="color-swatch" style="background:#8B5A2B;"></div>
-        <h3>Wood / Timber</h3>
-      </div>
-      <div class="option-card" data-group="exteriorColour" data-value="Brick Red / Terracotta">
-        <div class="color-swatch" style="background:#A0522D;"></div>
-        <h3>Brick / Terracotta</h3>
-      </div>
-      <div class="option-card" data-group="exteriorColour" data-value="Beige / Sand">
-        <div class="color-swatch" style="background:#D2B48C;"></div>
-        <h3>Beige / Sand</h3>
-      </div>
-      <div class="option-card" data-group="exteriorColour" data-value="Blue / Navy">
-        <div class="color-swatch" style="background:#2c3e6b;"></div>
-        <h3>Blue / Navy</h3>
-      </div>
-      <div class="option-card" data-group="exteriorColour" data-value="Other / Specific code">
-        <div class="color-swatch" style="background:#999;"></div>
-        <h3>Other / Specific Code</h3>
-        <p>Note exact code later</p>
+      <div class="form-group">
+        <label for="exteriorColourNote">Preferred colour / finish</label>
+        <input type="text" id="exteriorColourNote" placeholder="e.g. deep grey, angel white, brick red">
       </div>
     </div>
     <div class="nav-buttons">
@@ -708,38 +862,68 @@
 
     <div class="section-label">Entrance Door</div>
     <div class="option-grid" style="margin-bottom:1.1rem;">
-      <div class="option-card" data-group="door" data-value="Steel security">
-        <h3>Steel Security</h3>
+      <div class="option-card style-card" data-group="door" data-value="French door, white">
+        <img src="door-french-white.jpg" alt="French entrance door with glass sidelights, white finish" loading="lazy">
+        <div class="card-body"><h3>French Door</h3><p>Glass sidelights, white finish.</p></div>
       </div>
-      <div class="option-card" data-group="door" data-value="Safety steel">
-        <h3>Safety Steel</h3>
+      <div class="option-card style-card" data-group="door" data-value="French door, black">
+        <img src="door-french-black.jpg" alt="French entrance door with glass sidelights, black finish" loading="lazy">
+        <div class="card-body"><h3>French Door</h3><p>Glass sidelights, black finish.</p></div>
       </div>
-      <div class="option-card" data-group="door" data-value="Titanium magnesium alloy">
-        <h3>Titanium Magnesium</h3>
+      <div class="option-card style-card" data-group="door" data-value="Sliding glass door">
+        <img src="door-sliding-black.jpg" alt="Sliding glass entrance door, aluminium frame" loading="lazy">
+        <div class="card-body"><h3>Sliding Glass Door</h3><p>Full-height glass, aluminium frame. Shown in black — also made in white.</p></div>
       </div>
-      <div class="option-card" data-group="door" data-value="Bridge aluminium">
-        <h3>Bridge Aluminium</h3>
+      <div class="option-card style-card" data-group="door" data-value="Solid panel door">
+        <img src="door-panel-charcoal.jpg" alt="Solid panel entrance door" loading="lazy">
+        <div class="card-body"><h3>Solid Panel Door</h3><p>No glass, for extra privacy and security. Shown in charcoal — also made in white or black.</p></div>
       </div>
-      <div class="option-card" data-group="door" data-value="KFC double doors">
-        <h3>KFC Double Doors</h3>
+    </div>
+    <div class="section-sub-note">Choosing the Sliding Glass Door or Solid Panel Door? Pick a frame colour:</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="doorColour" data-value="White">
+        <div class="color-swatch" style="background:#f5f5f5; border:1px solid #ddd;"></div>
+        <h3>White</h3>
+      </div>
+      <div class="option-card" data-group="doorColour" data-value="Black">
+        <div class="color-swatch" style="background:#1a1a1a;"></div>
+        <h3>Black</h3>
       </div>
     </div>
 
     <div class="section-label">Windows</div>
     <div class="option-grid" style="margin-bottom:1.1rem;">
-      <div class="option-card" data-group="windows" data-value="Plastic steel">
-        <h3>Plastic Steel</h3>
+      <div class="option-card style-card" data-group="windows" data-value="Sliding window">
+        <img src="window-sliding-black.jpg" alt="Aluminium sliding window" loading="lazy">
+        <div class="card-body"><h3>Sliding Window</h3><p>Shown in black — also made in white.</p></div>
       </div>
-      <div class="option-card" data-group="windows" data-value="Aluminium alloy">
-        <h3>Aluminium Alloy</h3>
+      <div class="option-card style-card" data-group="windows" data-value="Awning window">
+        <img src="window-awning-black.jpg" alt="Aluminium awning window" loading="lazy">
+        <div class="card-body"><h3>Awning Window</h3><p>Shown in black — also made in white.</p></div>
       </div>
-      <div class="option-card" data-group="windows" data-value="Thermal-break aluminium">
-        <h3>Thermal-break Alu</h3>
+      <div class="option-card style-card" data-group="windows" data-value="Awning window, charcoal">
+        <img src="window-awning-charcoal.jpg" alt="Aluminium awning window, charcoal frame" loading="lazy">
+        <div class="card-body"><h3>Awning Window</h3><p>Charcoal aluminium frame.</p></div>
+      </div>
+    </div>
+    <div class="section-sub-note">Frame colour for your windows:</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="windowColour" data-value="White">
+        <div class="color-swatch" style="background:#f5f5f5; border:1px solid #ddd;"></div>
+        <h3>White</h3>
+      </div>
+      <div class="option-card" data-group="windowColour" data-value="Black">
+        <div class="color-swatch" style="background:#1a1a1a;"></div>
+        <h3>Black</h3>
+      </div>
+      <div class="option-card" data-group="windowColour" data-value="Charcoal">
+        <div class="color-swatch" style="background:#4a4a4a;"></div>
+        <h3>Charcoal</h3>
       </div>
     </div>
 
     <div class="section-label">Flooring</div>
-    <div class="option-grid">
+    <div class="option-grid" style="margin-bottom:1.1rem;">
       <div class="option-card" data-group="flooring" data-value="SPC flooring">
         <h3>SPC Flooring</h3>
         <p>More beautiful and stronger (recommended)</p>
@@ -747,6 +931,42 @@
       <div class="option-card" data-group="flooring" data-value="PVC flooring">
         <h3>PVC Flooring</h3>
         <p>Standard vinyl options</p>
+      </div>
+    </div>
+
+    <div class="section-label">Flooring Colour / Finish</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="flooringColour" data-value="White Pine (SWD20062202)">
+        <img src="floor-white-pine-SWD20062202.jpg" alt="Flooring finish, white pine wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>White Pine</h3><p>SWD20062202</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Wutong Wood (SWD20062031)">
+        <img src="floor-wutong-wood-SWD20062031.jpg" alt="Flooring finish, wutong wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Wutong Wood</h3><p>SWD20062031</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Maple (SWD20062027)">
+        <img src="floor-maple-SWD20062027.jpg" alt="Flooring finish, maple wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Maple</h3><p>SWD20062027</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Nanguo Wood (SWD20062030)">
+        <img src="floor-nanguo-wood-SWD20062030.jpg" alt="Flooring finish, nanguo wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Nanguo Wood</h3><p>SWD20062030</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Cedar (SWD20062032)">
+        <img src="floor-cedar-SWD20062032.jpg" alt="Flooring finish, cedar wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Cedar</h3><p>SWD20062032</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Light Chestnut (SWD20062033)">
+        <img src="floor-light-chestnut-SWD20062033.jpg" alt="Flooring finish, light chestnut wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Light Chestnut</h3><p>SWD20062033</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Palm Wood (SWD20062029)">
+        <img src="floor-palm-wood-SWD20062029.jpg" alt="Flooring finish, palm wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Palm Wood</h3><p>SWD20062029</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Ash Grey (SWD20062028)">
+        <img src="floor-ash-grey-SWD20062028.jpg" alt="Flooring finish, ash grey wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Ash Grey</h3><p>SWD20062028</p></div>
       </div>
     </div>
 
@@ -884,17 +1104,23 @@ const selections = {
   size: null,
   layout: null,
   roof: null,
-  kitchenBase: "Basic: L-shaped marble + SS sink + induction",
+  kitchenBase: null,
+  kitchenFinish: null,
   kitchenUpgrades: [],
   benchtop: null,
+  uvBoardFinish: null,
   bathroomBase: "Basic: Toilet + mirror + sink cabinet + shower nozzle",
   bathroomShape: null,
   bathroomUpgrades: [],
+  bathroomBenchtop: null,
   wallType: null,
   exteriorColour: null,
   door: null,
+  doorColour: null,
   windows: null,
-  flooring: null
+  windowColour: null,
+  flooring: null,
+  flooringColour: null
 };
 
 let currentStep = 1;
@@ -910,56 +1136,80 @@ const TEAM_EMAIL = 'enquires@foldouthomes.com.au';
 // endpoint for future submissions. See claude/brand-a-push.md for details.
 const LEAD_ENDPOINT = 'https://formsubmit.co/ajax/' + TEAM_EMAIL;
 
-const layoutsBySize = {
+// Real floor plans, by size. Only sizes with actual confirmed layouts go
+// here — anything else falls back to the free-text field below so we're
+// never showing a customer a "layout" that isn't real.
+const realLayouts = {
   "20ft": [
-    { value: "20ft-A", label: "Layout A", desc: "Open plan living + bathroom" },
-    { value: "20ft-B", label: "Layout B", desc: "Living + separate bedroom + bath" },
-    { value: "20ft-C", label: "Layout C", desc: "Two rooms + bathroom" },
-    { value: "20ft-D", label: "Layout D", desc: "Compact studio style" },
-    { value: "20ft-E", label: "Layout E", desc: "Central bathroom split" },
-    { value: "20ft-F", label: "Layout F", desc: "Two bedrooms + living" },
-    { value: "20ft-G", label: "Layout G", desc: "Cross layout with bath" },
-    { value: "20ft-H", label: "Layout H", desc: "Four-room style" },
-    { value: "20ft-I", label: "Layout I", desc: "Open living + two rooms" }
+    { value: "2 Bedroom", img: "layout-20ft-2bed.jpg", desc: "Two bedrooms with built-in wardrobes, central bathroom, open-plan kitchen and living area." },
+    { value: "1 Bedroom", img: "layout-20ft-1bed.jpg", desc: "One bedroom, bathroom, open-plan kitchen and living area with a built-in desk nook." }
   ],
   "30ft": [
-    { value: "30ft-A", label: "Layout A", desc: "Open plan + bath" },
-    { value: "30ft-B", label: "Layout B", desc: "Living + bedroom + bath" },
-    { value: "30ft-C", label: "Layout C", desc: "Two bedrooms style" },
-    { value: "30ft-D", label: "Layout D", desc: "Long living + bath" },
-    { value: "30ft-E", label: "Layout E", desc: "Split living areas" },
-    { value: "30ft-F", label: "Layout F", desc: "Three room layout" },
-    { value: "30ft-G", label: "Layout G", desc: "Dual bathrooms option" },
-    { value: "30ft-H", label: "Layout H", desc: "Central corridor" },
-    { value: "30ft-I", label: "Layout I", desc: "Four-room configuration" },
-    { value: "30ft-J", label: "Layout J", desc: "Two bed + two bath" },
-    { value: "30ft-K", label: "Layout K", desc: "Open + side rooms" },
-    { value: "30ft-L", label: "Layout L", desc: "Extended living" }
+    { value: "1 Bedroom", img: "layout-30ft-1bed.jpg", desc: "One bedroom with walk-in wardrobe, bathroom, and open-plan living and dining." },
+    { value: "2 Bedroom", img: "layout-30ft-2bed.jpg", desc: "Two bedrooms, bathroom, and open-plan living and dining." },
+    { value: "3 Bedroom", img: "layout-30ft-3bed.jpg", desc: "Three bedrooms, bathroom, and open-plan living and dining." }
   ],
   "40ft": [
-    { value: "40ft-A", label: "Layout A", desc: "Large open plan" },
-    { value: "40ft-B", label: "Layout B", desc: "Living + bedroom split" },
-    { value: "40ft-C", label: "Layout C", desc: "Three room linear" },
-    { value: "40ft-D", label: "Layout D", desc: "Dual living + baths" },
-    { value: "40ft-E", label: "Layout E", desc: "Central living core" },
-    { value: "40ft-F", label: "Layout F", desc: "Two bed + two bath" },
-    { value: "40ft-G", label: "Layout G", desc: "Four room layout" },
-    { value: "40ft-H", label: "Layout H", desc: "Master + secondary" },
-    { value: "40ft-I", label: "Layout I", desc: "Extended family style" },
-    { value: "40ft-J", label: "Layout J", desc: "Open + private wings" },
-    { value: "40ft-K", label: "Layout K", desc: "Multiple bathrooms" },
-    { value: "40ft-L", label: "Layout L", desc: "Studio + bedrooms" },
-    { value: "40ft-M", label: "Layout M", desc: "Four bedroom capable" },
-    { value: "40ft-N", label: "Layout N", desc: "Hotel-style rooms" },
-    { value: "40ft-O", label: "Layout O", desc: "Symmetrical dual units" },
-    { value: "40ft-P", label: "Layout P", desc: "Open plan luxury" },
-    { value: "40ft-Q", label: "Layout Q", desc: "Multi-bath family" },
-    { value: "40ft-R", label: "Layout R", desc: "Maximum rooms" }
-  ],
-  "Custom": [
-    { value: "Custom layout", label: "Custom Layout", desc: "Describe in notes later" }
+    { value: "2 Bedroom", img: "layout-40ft-2bed.jpg", desc: "Two bedrooms with walk-in wardrobe storage, plus open-plan living and dining." },
+    { value: "3 Bedroom", img: "layout-40ft-3bed.jpg", desc: "Three bedrooms, bathroom, kitchen and open-plan living and dining." }
   ]
 };
+
+let lastLayoutMode = null;
+
+function populateLayoutStep() {
+  const grid = document.getElementById('layoutOptions');
+  const notesWrap = document.getElementById('layoutNotesWrap');
+  const desc = document.getElementById('layoutStepDesc');
+  const textarea = document.getElementById('layoutNotes');
+  const options = realLayouts[selections.size];
+  const mode = options ? ('cards:' + selections.size) : 'text';
+
+  if (mode !== lastLayoutMode) {
+    selections.layout = null;
+    document.getElementById('next3').disabled = true;
+    if (textarea) textarea.value = '';
+  }
+  lastLayoutMode = mode;
+
+  if (options) {
+    desc.textContent = 'Click the layout that fits you best.';
+    grid.style.display = '';
+    notesWrap.style.display = 'none';
+    grid.innerHTML = '';
+    options.forEach(function(item) {
+      const div = document.createElement('div');
+      div.className = 'option-card style-card';
+      div.dataset.group = 'layout';
+      div.dataset.value = item.value;
+      if (selections.layout === item.value) div.classList.add('selected');
+      div.innerHTML = '<img src="' + item.img + '" alt="' + item.value + ' floor plan, real Fold Out Homes layout" loading="lazy">' +
+        '<div class="card-body"><h3>' + item.value + '</h3><p>' + item.desc + '</p></div>';
+      grid.appendChild(div);
+    });
+  } else {
+    desc.textContent = 'Tell us roughly what you need. Exact plans are confirmed with our team once we have your details.';
+    grid.style.display = 'none';
+    notesWrap.style.display = '';
+    grid.innerHTML = '';
+  }
+}
+
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.id === 'layoutNotes') {
+    selections.layout = e.target.value.trim() || null;
+    document.getElementById('next3').disabled = !selections.layout;
+  }
+  if (e.target && (e.target.id === 'exteriorCode' || e.target.id === 'exteriorColourNote')) {
+    const code = document.getElementById('exteriorCode').value.trim();
+    const note = document.getElementById('exteriorColourNote').value.trim();
+    const parts = [];
+    if (code) parts.push('Code: ' + code);
+    if (note) parts.push(note);
+    selections.exteriorColour = parts.length ? parts.join(' — ') : null;
+    checkStepReady();
+  }
+});
 
 document.addEventListener('click', function(e) {
   const card = e.target.closest('.option-card');
@@ -1000,11 +1250,6 @@ document.addEventListener('click', function(e) {
     card.classList.add('selected');
     selections.size = value;
     document.getElementById('next2').disabled = false;
-  } else if (card.closest('#layoutOptions')) {
-    parent.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
-    card.classList.add('selected');
-    selections.layout = value;
-    document.getElementById('next3').disabled = false;
   }
 
   checkStepReady();
@@ -1012,24 +1257,10 @@ document.addEventListener('click', function(e) {
 
 function checkStepReady() {
   if (currentStep === 1) document.getElementById('next1').disabled = !selections.model;
+  if (currentStep === 3) document.getElementById('next3').disabled = !selections.layout;
   if (currentStep === 4) document.getElementById('next4').disabled = !selections.roof;
   if (currentStep === 7) document.getElementById('next7').disabled = !(selections.wallType && selections.exteriorColour);
   if (currentStep === 8) document.getElementById('next8').disabled = !(selections.door && selections.windows && selections.flooring);
-}
-
-function populateLayouts() {
-  const container = document.getElementById('layoutOptions');
-  container.innerHTML = '';
-  const list = layoutsBySize[selections.size] || layoutsBySize["Custom"];
-  list.forEach(function(item) {
-    const div = document.createElement('div');
-    div.className = 'option-card';
-    div.dataset.value = item.value;
-    div.innerHTML = '<h3>' + item.label + '</h3><p>' + item.desc + '</p>';
-    container.appendChild(div);
-  });
-  document.getElementById('next3').disabled = true;
-  selections.layout = null;
 }
 
 function updateProgress() {
@@ -1056,7 +1287,7 @@ function showStep(n) {
 }
 
 function nextStep() {
-  if (currentStep === 2) populateLayouts();
+  if (currentStep === 2) populateLayoutStep();
   if (currentStep === 9) buildSummary();
   if (currentStep < totalSteps) showStep(currentStep + 1);
 }
@@ -1094,17 +1325,23 @@ function buildSummary() {
     ['Size', selections.size],
     ['Layout', selections.layout],
     ['Roof / Terrace', selections.roof],
-    ['Kitchen Base', selections.kitchenBase],
+    ['Kitchen Layout', selections.kitchenBase],
+    ['Kitchen Finish', selections.kitchenFinish],
     ['Kitchen Upgrades', kitchenUp],
+    ['UV Board Finish', selections.uvBoardFinish],
     ['Benchtop', selections.benchtop],
     ['Bathroom Base', selections.bathroomBase],
-    ['Bathroom Shape', selections.bathroomShape],
+    ['Bathroom Size', selections.bathroomShape],
     ['Bathroom Upgrades', bathUp],
+    ['Bathroom Stone Bench', selections.bathroomBenchtop],
     ['Wall Type', selections.wallType],
     ['Exterior Colour', selections.exteriorColour],
     ['Door', selections.door],
+    ['Door Colour', selections.doorColour],
     ['Windows', selections.windows],
+    ['Window Colour', selections.windowColour],
     ['Flooring', selections.flooring],
+    ['Flooring Colour', selections.flooringColour],
     ['Quantity', extras.quantity],
     ['Insulation', extras.insulation],
     ['Timeline', extras.timeline]
@@ -1135,17 +1372,23 @@ function buildPrintTable() {
     ['Size', selections.size],
     ['Layout', selections.layout],
     ['Roof / Terrace / Balcony', selections.roof],
-    ['Kitchen Base', selections.kitchenBase],
+    ['Kitchen Layout', selections.kitchenBase],
+    ['Kitchen Finish', selections.kitchenFinish],
     ['Kitchen Upgrades', kitchenUp],
+    ['UV Board Finish', selections.uvBoardFinish],
     ['Benchtop Colour', selections.benchtop],
     ['Bathroom Base', selections.bathroomBase],
-    ['Bathroom Shape', selections.bathroomShape],
+    ['Bathroom Size', selections.bathroomShape],
     ['Bathroom Upgrades', bathUp],
+    ['Bathroom Stone Bench', selections.bathroomBenchtop],
     ['Wall Type', selections.wallType],
     ['Exterior Colour', selections.exteriorColour],
     ['Entrance Door', selections.door],
+    ['Door Colour', selections.doorColour],
     ['Windows', selections.windows],
+    ['Window Colour', selections.windowColour],
     ['Flooring', selections.flooring],
+    ['Flooring Colour', selections.flooringColour],
     ['Quantity', extras.quantity],
     ['Insulation', extras.insulation],
     ['Preferred Timeline', extras.timeline],
@@ -1181,16 +1424,22 @@ function buildLeadPayload(cust, extras) {
     layout: selections.layout,
     roof_terrace: selections.roof,
     kitchen_base: selections.kitchenBase,
+    kitchen_finish: selections.kitchenFinish,
     kitchen_upgrades: kitchenUp,
+    uv_board_finish: selections.uvBoardFinish || 'N/A',
     benchtop: selections.benchtop,
     bathroom_base: selections.bathroomBase,
     bathroom_shape: selections.bathroomShape,
     bathroom_upgrades: bathUp,
+    bathroom_benchtop: selections.bathroomBenchtop || 'Not specified',
     wall_type: selections.wallType,
     exterior_colour: selections.exteriorColour,
     door: selections.door,
+    door_colour: selections.doorColour || 'Not specified',
     windows: selections.windows,
+    window_colour: selections.windowColour || 'Not specified',
     flooring: selections.flooring,
+    flooring_colour: selections.flooringColour || 'Not specified',
     quantity: extras.quantity,
     insulation: extras.insulation,
     timeline: extras.timeline,
@@ -1235,14 +1484,17 @@ Layout: ${selections.layout}
 Roof / Terrace: ${selections.roof}
 
 KITCHEN
-Base: ${selections.kitchenBase}
+Layout: ${selections.kitchenBase}
+Finish: ${selections.kitchenFinish}
 Upgrades: ${kitchenUp}
+UV Board Finish: ${selections.uvBoardFinish}
 Benchtop: ${selections.benchtop}
 
 BATHROOM
 Base: ${selections.bathroomBase}
-Shape: ${selections.bathroomShape}
+Size: ${selections.bathroomShape}
 Upgrades: ${bathUp}
+Stone Bench: ${selections.bathroomBenchtop || 'Not specified'}
 
 EXTERIOR & FITTINGS
 Wall Type: ${selections.wallType}
@@ -1250,6 +1502,7 @@ Colour: ${selections.exteriorColour}
 Door: ${selections.door}
 Windows: ${selections.windows}
 Flooring: ${selections.flooring}
+Flooring Colour: ${selections.flooringColour}
 
 EXTRAS
 Quantity: ${extras.quantity}
@@ -1315,6 +1568,3 @@ updateProgress();
 </script>
 </body>
 </html>
-
-
-
