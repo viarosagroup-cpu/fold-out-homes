@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fold Out Homes - Custom Options Selector</title>
+<style>
+  :root {
+    --primary: #1a3c2e;
+    --primary-dark: #0f241c;
+    --accent: #c0392b;
+    --bg: #f6f4ef;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #5c6570;
+    --border: #e2dfd6;
+    --success: #059669;
+    --gold: #b8860b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 1.1rem 1.4rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+  header p { opacity: 0.88; font-size: 0.85rem; margin-top: 0.15rem; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 1.15rem; }
+  .price-banner {
+    background: linear-gradient(135deg, var(--gold), #d4a017);
+    color: white;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    letter-spacing: 0.01em;
+  }
+  .price-banner span {
+    display: block;
+    font-weight: 400;
+    font-size: 0.78rem;
+    opacity: 0.92;
+    margin-top: 0.15rem;
+  }
+  .progress-wrap {
+    background: white;
+    border-radius: 11px;
+    padding: 0.8rem 1.15rem;
+    margin-bottom: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+  }
+  .progress-bar {
+    height: 6px;
+    background: #e2dfd6;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #2d6a4f);
+    border-radius: 99px;
+    transition: width 0.35s ease;
+  }
+  .steps-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .step-panel {
+    display: none;
+    background: var(--card);
+    border-radius: 13px;
+    padding: 1.4rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+  }
+  .step-panel.active { display: block; animation: fadeIn 0.28s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: none; }
+  }
+  .step-title {
+    font-size: 1.28rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+  }
+  .step-desc {
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+  }
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.8rem;
+  }
+  .option-card {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.16s ease;
+    background: #fafaf7;
+    position: relative;
+    user-select: none;
+  }
+  .option-card:hover {
+    border-color: var(--primary);
+    background: #eef6f1;
+    transform: translateY(-1px);
+  }
+  .option-card.selected {
+    border-color: var(--primary);
+    background: #e4f0e9;
+    box-shadow: 0 0 0 3px rgba(26,60,46,0.16);
+  }
+  .option-card.selected::after {
+    content: "\2713";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: var(--primary);
+    color: white;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .option-card h3 { font-size: 0.92rem; margin-bottom: 0.2rem; }
+  .option-card p { font-size: 0.75rem; color: var(--muted); line-height: 1.35; }
+  .option-card .price-tag {
+    display: inline-block;
+    margin-top: 0.4rem;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+  .color-swatch {
+    width: 100%;
+    height: 38px;
+    border-radius: 6px;
+    margin-bottom: 0.55rem;
+    border: 1px solid #ddd;
+  }
+  .section-label {
+    margin: 1rem 0 0.55rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0.75rem 1.35rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.16s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+  .btn-secondary {
+    background: white;
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+  .btn-secondary:hover { background: #f3f4f6; }
+  .btn-submit {
+    background: var(--accent);
+    color: white;
+    padding: 0.95rem 1.4rem;
+    font-size: 1rem;
+  }
+  .btn-submit:hover { background: #a93226; }
+  .btn-submit:disabled { background: #d3a29c; cursor: not-allowed; }
+  .btn-pdf { background: #1e40af; color: white; padding: 0.85rem 1.25rem; }
+  .btn-pdf:hover { background: #1e3a8a; }
+  .btn-email { background: #0f766e; color: white; padding: 0.85rem 1.25rem; }
+  .btn-email:hover { background: #0d9488; }
+  .summary-box {
+    background: #eef6f1;
+    border: 1px solid #c5ddd0;
+    border-radius: 10px;
+    padding: 1.15rem;
+    margin-bottom: 1.15rem;
+  }
+  .summary-box h3 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1rem; }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #d0e5da;
+    font-size: 0.88rem;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { color: var(--muted); }
+  .summary-value { font-weight: 600; text-align: right; max-width: 58%; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.86rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 2px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.92rem;
+    font-family: inherit;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .form-group textarea { min-height: 85px; resize: vertical; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+  }
+  .note {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    padding: 0.65rem;
+    background: #fef9e7;
+    border-radius: 7px;
+    border-left: 3px solid #f1c40f;
+  }
+  .error-note {
+    font-size: 0.8rem;
+    color: #92400e;
+    margin-top: 0.8rem;
+    padding: 0.65rem;
+    background: #fef3c7;
+    border-radius: 7px;
+    border-left: 3px solid #d97706;
+    display: none;
+  }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--success);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    margin: 0 auto 1.15rem;
+  }
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.15rem;
+  }
+  .action-buttons button { flex: 1; min-width: 130px; }
+
+  @media print {
+    body { background: white; }
+    header, .progress-wrap, .price-banner, .nav-buttons, .action-buttons, .note, .error-note, button { display: none !important; }
+    .step-panel { display: none !important; box-shadow: none; border: none; padding: 0; }
+    #printArea { display: block !important; }
+    #printArea .print-header { border-bottom: 3px solid #1a3c2e; padding-bottom: 10px; margin-bottom: 16px; }
+    #printArea h1 { color: #1a3c2e; font-size: 20px; }
+    #printArea .print-meta { font-size: 11px; color: #555; margin-top: 3px; }
+    #printArea table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    #printArea th, #printArea td { border: 1px solid #ccc; padding: 7px 9px; text-align: left; font-size: 12px; }
+    #printArea th { background: #eef6f1; width: 34%; }
+    #printArea .print-footer { margin-top: 20px; font-size: 10px; color: #666; border-top: 1px solid #ddd; padding-top: 8px; }
+  }
+  #printArea { display: none; }
+
+  @media (max-width: 600px) {
+    .option-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    header { padding: 0.9rem; }
+    .container { padding: 0.8rem; }
+    .step-panel { padding: 1.05rem; }
+    .action-buttons button { min-width: 100%; }
+  }
+
+  .option-card.style-card { padding: 0; overflow: hidden; }
+  .option-card.style-card img {
+    width: 100%;
+    height: 108px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px 8px 0 0;
+  }
+  .option-card.style-card .card-body { padding: 0.75rem 0.85rem 0.9rem; }
+  .option-card.style-card.selected img { filter: brightness(0.97); }
+  .gallery-strip {
+    margin-bottom: 1.1rem;
+  }
+  .gallery-strip h2 {
+    font-size: 1rem;
+    color: var(--primary);
+    margin-bottom: 0.6rem;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+  .gallery-grid img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .gallery-caption {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 1.05rem;
+  }
+  @media (max-width: 600px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .option-card.style-card img { height: 92px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container" style="padding:0;">
+    <h1>FOLD OUT HOMES</h1>
+    <p>Custom Options Selector - Design your expandable home and request a quote</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="price-banner">
+    From $27,990 landed to your QLD site
+    <span>Fast delivery &middot; approval not included</span>
+  </div>
+
+
+  <div class="gallery-strip">
+    <h2>Real Fold Out Homes finishes</h2>
+    <div class="gallery-grid">
+      <img src="images/gallery-kitchen.jpg" alt="Kitchen and dining, real Fold Out Homes finish" loading="lazy">
+      <img src="images/gallery-living.jpg" alt="Living area, real Fold Out Homes finish" loading="lazy">
+      <img src="images/gallery-bedroom.jpg" alt="Bedroom, real Fold Out Homes finish" loading="lazy">
+      <img src="images/gallery-bathroom.jpg" alt="Bathroom, real Fold Out Homes finish" loading="lazy">
+    </div>
+    <p class="gallery-caption">Finish photography shown across our style range &mdash; exact inclusions confirmed at Step 5&ndash;8 below.</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:9%"></div></div>
+    <div class="steps-label">
+      <span id="stepIndicator">Step 1 of 10</span>
+      <span id="stepName">Model Style</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: Model / Style -->
+  <div class="step-panel active" data-step="1">
+    <h2 class="step-title">1. Choose Your Model Style</h2>
+    <p class="step-desc"><strong>Click the style that best matches what you want.</strong> These are the 6 main styles we build.</p>
+    <div class="option-grid">
+      <div class="option-card style-card" data-group="model" data-value="Modern Porch Style">
+        <img src="images/style-modern-porch.jpg" alt="Modern Porch Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Modern Porch Style</h3>
+        <p>Stylish contemporary design with spacious covered deck. Great for homes, offices or guest spaces.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Container Style">
+        <img src="images/style-container.jpg" alt="Container Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Container Style</h3>
+        <p>Sleek durable container look with full-glass folding entry. Our $27,990 base model. Ideal for offices, rentals and custom living spaces.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Classic Porch Style">
+        <img src="images/style-classic-porch.jpg" alt="Classic Porch Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Classic Porch Style</h3>
+        <p>Timeless design with functional covered deck. Perfect for residential or rural properties.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Long House Style">
+        <img src="images/style-long-house.jpg" alt="Long House Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Long House Style</h3>
+        <p>Spacious and practical. Ideal for larger families, staff housing or multi-room layouts.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Premium Glass Style">
+        <img src="images/style-premium-glass.jpg" alt="Premium Glass Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Premium Glass Style</h3>
+        <p>Modern look with large glass panels for natural light. Great for showrooms or luxury retreats.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Ultimate Porch Style">
+        <img src="images/style-ultimate-porch.jpg" alt="Ultimate Porch Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Ultimate Porch Style</h3>
+        <p>Clean, modern and comfortable. Top choice for homes, offices and holiday getaways.</p>
+              </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <div></div>
+      <button class="btn-primary" onclick="nextStep()" id="next1" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Size -->
+  <div class="step-panel" data-step="2">
+    <h2 class="step-title">2. Choose Size</h2>
+    <p class="step-desc"><strong>Click a size</strong>, then press Next.</p>
+    <div class="option-grid" id="sizeOptions">
+      <div class="option-card" data-value="20ft">
+        <h3>20 ft</h3>
+        <p>Compact - Ideal for 1-2 bedrooms</p>
+      </div>
+      <div class="option-card" data-value="30ft">
+        <h3>30 ft</h3>
+        <p>Medium - Flexible living and sleeping</p>
+      </div>
+      <div class="option-card" data-value="40ft">
+        <h3>40 ft</h3>
+        <p>Spacious - Multi-bedroom layouts</p>
+      </div>
+      <div class="option-card" data-value="Custom">
+        <h3>Custom Size</h3>
+        <p>Tell us your preferred dimensions</p>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next2" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Layout -->
+  <div class="step-panel" data-step="3">
+    <h2 class="step-title">3. Floor Plan Layout</h2>
+    <p class="step-desc"><strong>Click a layout</strong>. Exact plans confirmed with order.</p>
+    <div class="option-grid" id="layoutOptions"></div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next3" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Roof / Terrace / Balcony -->
+  <div class="step-panel" data-step="4">
+    <h2 class="step-title">4. Roof, Terrace and Balcony</h2>
+    <p class="step-desc">Choose outdoor living and roof options.</p>
+    <div class="option-grid">
+      <div class="option-card" data-group="roof" data-value="Standard roof only">
+        <h3>Standard Roof Only</h3>
+        <p>No extra outdoor structure</p>
+      </div>
+      <div class="option-card" data-group="roof" data-value="Side terrace / balcony">
+        <h3>Side Terrace / Balcony</h3>
+        <p>Roofed 3m verandah with railing</p>
+        <span class="price-tag">+$5,000 &middot; $32,990 total</span>
+      </div>
+      <div class="option-card" data-group="roof" data-value="Rooftop terrace">
+        <h3>Rooftop Terrace</h3>
+        <p>Full or partial roof deck</p>
+      </div>
+      <div class="option-card" data-group="roof" data-value="Side + Rooftop">
+        <h3>Side + Rooftop</h3>
+        <p>Maximum outdoor space</p>
+      </div>
+      <div class="option-card" data-group="roof" data-value="Support frame / elevated">
+        <h3>Support Frame / Elevated</h3>
+        <p>Raised on steel frame with stairs</p>
+      </div>
+      <div class="option-card" data-group="roof" data-value="Glass curtain wall option">
+        <h3>Glass Curtain Wall</h3>
+        <p>Premium glazed facade option</p>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next4" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Kitchen -->
+  <div class="step-panel" data-step="5">
+    <h2 class="step-title">5. Kitchen</h2>
+    <p class="step-desc">Start with the basic package, then choose upgrades if you want them.</p>
+
+    <div class="section-label">Basic Configuration (included)</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card selected" data-group="kitchenBase" data-value="Basic: L-shaped marble + SS sink + induction">
+        <h3>Basic Kitchen</h3>
+        <p>L-shaped marble countertop + stainless steel sink + induction cooker</p>
+      </div>
+    </div>
+
+    <div class="section-label">Kitchen Upgrades (select any that apply)</div>
+    <div class="option-grid" id="kitchenUpgrades">
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="Hanging cabinet">
+        <h3>Hanging Cabinet</h3>
+        <p>Extra upper storage</p>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="U-shaped marble">
+        <h3>U-shaped Marble</h3>
+        <p>Upgrade to U-shaped layout</p>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="UV board">
+        <h3>UV Board</h3>
+        <p>Premium UV wall panels in kitchen</p>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="Advanced washing sink">
+        <h3>Advanced Washing Sink</h3>
+        <p>Upgraded sink package</p>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="None - keep basic only">
+        <h3>None</h3>
+        <p>Keep basic kitchen only</p>
+      </div>
+    </div>
+
+    <div class="section-label">Benchtop Colour Preference</div>
+    <div class="option-grid">
+      <div class="option-card" data-group="benchtop" data-value="YL-4003 Pure White">
+        <div class="color-swatch" style="background:#f0f0f0;"></div>
+        <h3>YL-4003</h3>
+        <p>Pure White</p>
+      </div>
+      <div class="option-card" data-group="benchtop" data-value="YL-1001 Jade Stone">
+        <div class="color-swatch" style="background:#e8e4dc;"></div>
+        <h3>YL-1001</h3>
+        <p>Jade Stone</p>
+      </div>
+      <div class="option-card" data-group="benchtop" data-value="YL-7608 Carrara Marble">
+        <div class="color-swatch" style="background:#f5f5f5;"></div>
+        <h3>YL-7608</h3>
+        <p>Carrara Marble</p>
+      </div>
+      <div class="option-card" data-group="benchtop" data-value="Other / Custom">
+        <div class="color-swatch" style="background:#ccc;"></div>
+        <h3>Other</h3>
+        <p>Note in comments</p>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next5">Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: Bathroom -->
+  <div class="step-panel" data-step="6">
+    <h2 class="step-title">6. Bathroom</h2>
+    <p class="step-desc">Basic package is included. Choose shape and upgrades.</p>
+
+    <div class="section-label">Basic Configuration (included)</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card selected" data-group="bathroomBase" data-value="Basic: Toilet + mirror + sink cabinet + shower nozzle">
+        <h3>Basic Bathroom</h3>
+        <p>Toilet + beauty mirror + sink and cabinet + shower nozzle</p>
+      </div>
+    </div>
+
+    <div class="section-label">Bathroom Shape</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="bathroomShape" data-value="Half round bathroom">
+        <h3>Half Round</h3>
+        <p>Curved glass shower</p>
+      </div>
+      <div class="option-card" data-group="bathroomShape" data-value="Rectangular bathroom">
+        <h3>Rectangular</h3>
+        <p>Square shower enclosure</p>
+      </div>
+      <div class="option-card" data-group="bathroomShape" data-value="Walk-in / open">
+        <h3>Walk-in / Open</h3>
+        <p>Modern wet-room style</p>
+      </div>
+    </div>
+
+    <div class="section-label">Bathroom Upgrades</div>
+    <div class="option-grid">
+      <div class="option-card multi" data-group="bathroomUpgrade" data-value="Water heater">
+        <h3>Water Heater</h3>
+        <p>Add hot water unit</p>
+      </div>
+      <div class="option-card multi" data-group="bathroomUpgrade" data-value="UV board">
+        <h3>UV Board</h3>
+        <p>Premium UV wall panels</p>
+      </div>
+      <div class="option-card multi" data-group="bathroomUpgrade" data-value="Two bathrooms">
+        <h3>Two Bathrooms</h3>
+        <p>Where layout allows</p>
+      </div>
+      <div class="option-card multi" data-group="bathroomUpgrade" data-value="None - keep basic only">
+        <h3>None</h3>
+        <p>Keep basic only</p>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next6">Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 7: Exterior -->
+  <div class="step-panel" data-step="7">
+    <h2 class="step-title">7. Exterior Cladding</h2>
+    <p class="step-desc">Choose wallboard type and colour family.</p>
+    <div class="section-label">Wallboard Type</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="wallType" data-value="Metal Carved Board">
+        <h3>Metal Carved Board</h3>
+        <p>Premium textured (brick, stone, wood looks)</p>
+      </div>
+      <div class="option-card" data-group="wallType" data-value="Common Colour Steel">
+        <h3>Common Colour Steel</h3>
+        <p>Smooth finish - wide colour range</p>
+      </div>
+    </div>
+    <div class="section-label">Colour Family</div>
+    <div class="option-grid">
+      <div class="option-card" data-group="exteriorColour" data-value="White / Angel White">
+        <div class="color-swatch" style="background:#f5f5f5;"></div>
+        <h3>White / Angel White</h3>
+      </div>
+      <div class="option-card" data-group="exteriorColour" data-value="Grey / Charcoal">
+        <div class="color-swatch" style="background:#6b6b6b;"></div>
+        <h3>Grey / Charcoal</h3>
+      </div>
+      <div class="option-card" data-group="exteriorColour" data-value="Wood / Timber">
+        <div class="color-swatch" style="background:#8B5A2B;"></div>
+        <h3>Wood / Timber</h3>
+      </div>
+      <div class="option-card" data-group="exteriorColour" data-value="Brick Red / Terracotta">
+        <div class="color-swatch" style="background:#A0522D;"></div>
+        <h3>Brick / Terracotta</h3>
+      </div>
+      <div class="option-card" data-group="exteriorColour" data-value="Beige / Sand">
+        <div class="color-swatch" style="background:#D2B48C;"></div>
+        <h3>Beige / Sand</h3>
+      </div>
+      <div class="option-card" data-group="exteriorColour" data-value="Blue / Navy">
+        <div class="color-swatch" style="background:#2c3e6b;"></div>
+        <h3>Blue / Navy</h3>
+      </div>
+      <div class="option-card" data-group="exteriorColour" data-value="Other / Specific code">
+        <div class="color-swatch" style="background:#999;"></div>
+        <h3>Other / Specific Code</h3>
+        <p>Note exact code later</p>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next7" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: Doors, Windows, Flooring -->
+  <div class="step-panel" data-step="8">
+    <h2 class="step-title">8. Doors, Windows and Flooring</h2>
+    <p class="step-desc">Select key fittings.</p>
+
+    <div class="section-label">Entrance Door</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="door" data-value="Steel security">
+        <h3>Steel Security</h3>
+      </div>
+      <div class="option-card" data-group="door" data-value="Safety steel">
+        <h3>Safety Steel</h3>
+      </div>
+      <div class="option-card" data-group="door" data-value="Titanium magnesium alloy">
+        <h3>Titanium Magnesium</h3>
+      </div>
+      <div class="option-card" data-group="door" data-value="Bridge aluminium">
+        <h3>Bridge Aluminium</h3>
+      </div>
+      <div class="option-card" data-group="door" data-value="KFC double doors">
+        <h3>KFC Double Doors</h3>
+      </div>
+    </div>
+
+    <div class="section-label">Windows</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="windows" data-value="Plastic steel">
+        <h3>Plastic Steel</h3>
+      </div>
+      <div class="option-card" data-group="windows" data-value="Aluminium alloy">
+        <h3>Aluminium Alloy</h3>
+      </div>
+      <div class="option-card" data-group="windows" data-value="Thermal-break aluminium">
+        <h3>Thermal-break Alu</h3>
+      </div>
+    </div>
+
+    <div class="section-label">Flooring</div>
+    <div class="option-grid">
+      <div class="option-card" data-group="flooring" data-value="SPC flooring">
+        <h3>SPC Flooring</h3>
+        <p>More beautiful and stronger (recommended)</p>
+      </div>
+      <div class="option-card" data-group="flooring" data-value="PVC flooring">
+        <h3>PVC Flooring</h3>
+        <p>Standard vinyl options</p>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next8" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 9: Extras -->
+  <div class="step-panel" data-step="9">
+    <h2 class="step-title">9. Quantity, Insulation and Timing</h2>
+    <p class="step-desc">Final details that help us quote accurately.</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="quantity">Number of units</label>
+        <select id="quantity">
+          <option value="1">1 unit</option>
+          <option value="2">2 units</option>
+          <option value="3">3 units</option>
+          <option value="4">4 units</option>
+          <option value="5+">5 or more</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="insulation">Wall Insulation</label>
+        <select id="insulation">
+          <option value="EPS">EPS (standard)</option>
+          <option value="Rock wool">Rock wool</option>
+          <option value="PU">PU (polyurethane)</option>
+          <option value="Not sure">Not sure yet</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="deliveryLocation">Delivery location / postcode</label>
+      <input type="text" id="deliveryLocation" placeholder="e.g. Brisbane QLD 4000 or region">
+    </div>
+
+    <div class="form-group">
+      <label for="timeline">Preferred timeline</label>
+      <select id="timeline">
+        <option value="ASAP">As soon as possible</option>
+        <option value="1-3 months">Within 1-3 months</option>
+        <option value="3-6 months">3-6 months</option>
+        <option value="Just researching">Just researching for now</option>
+      </select>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next9">Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 10: Contact + Submit -->
+  <div class="step-panel" data-step="10">
+    <h2 class="step-title">10. Your Details and Submit</h2>
+    <p class="step-desc">Review everything, then submit your request. You can also download a PDF or email our team directly.</p>
+
+    <div class="summary-box" id="summaryBox"></div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="customerName">Full Name *</label>
+        <input type="text" id="customerName" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label for="customerPhone">Phone / WhatsApp</label>
+        <input type="tel" id="customerPhone" placeholder="0488 333 336 or your number">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="customerEmail">Email *</label>
+      <input type="email" id="customerEmail" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label for="customerNotes">Additional notes</label>
+      <textarea id="customerNotes" placeholder="Exact cladding codes, special requests, site access notes..."></textarea>
+    </div>
+
+    <div class="note">
+      This is a configuration request only. Final pricing and specifications will be confirmed in your formal quote from Fold Out Homes.
+    </div>
+    <div class="error-note" id="submitError">
+      We couldn't send your request automatically. Please tap "Email to Team" below as a backup, or call/text 0488 333 336 — your configuration has been saved to PDF-ready format either way.
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-pdf" onclick="downloadPDF()">Download PDF Summary</button>
+      <button class="btn-email" onclick="emailTeam()">Email to Team</button>
+      <button class="btn-submit" onclick="submitQuote()" id="submitBtn">Submit Quote Request</button>
+    </div>
+
+    <div class="nav-buttons" style="margin-top:0.9rem;">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="step-panel" data-step="11" id="successPanel" style="display:none;">
+    <div style="text-align:center;padding:1.8rem 1rem;">
+      <div class="success-icon">&#10003;</div>
+      <h2 style="color:var(--success);margin-bottom:0.5rem;">Quote Request Sent</h2>
+      <p style="max-width:440px;margin:0 auto 1.3rem;color:var(--muted);font-size:0.92rem;">
+        Your configuration has been sent to our team. We'll be in touch with your formal quote. You can also download a PDF copy for your records.
+      </p>
+      <div class="summary-box" id="finalSummary" style="text-align:left;max-width:500px;margin:0 auto 1.3rem;"></div>
+      <div class="action-buttons" style="max-width:500px;margin:0 auto;">
+        <button class="btn-pdf" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn-email" onclick="emailTeam()">Email Team</button>
+        <button class="btn-primary" onclick="location.reload()">Start New Selection</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printArea">
+  <div class="print-header">
+    <h1>FOLD OUT HOMES - Quote Request</h1>
+    <div class="print-meta" id="printMeta"></div>
+  </div>
+  <table id="printTable"></table>
+  <div class="print-footer">
+    Generated from Fold Out Homes Custom Options Selector. This is a configuration request only. Call / Text 0488 333 336 for your formal quote.
+  </div>
+</div>
+
+<script>
+const selections = {
+  model: null,
+  size: null,
+  layout: null,
+  roof: null,
+  kitchenBase: "Basic: L-shaped marble + SS sink + induction",
+  kitchenUpgrades: [],
+  benchtop: null,
+  bathroomBase: "Basic: Toilet + mirror + sink cabinet + shower nozzle",
+  bathroomShape: null,
+  bathroomUpgrades: [],
+  wallType: null,
+  exteriorColour: null,
+  door: null,
+  windows: null,
+  flooring: null
+};
+
+let currentStep = 1;
+const totalSteps = 10;
+
+// Real team inbox. Confirmed 17 Sep 2026 (see claude/brand-a-push.md).
+const TEAM_EMAIL = 'enquires@foldouthomes.com.au';
+
+// Lead capture endpoint. Uses FormSubmit.co (no account/signup required) so
+// every "Submit Quote Request" click actually reaches the team inbox instead
+// of silently vanishing. FIRST SUBMISSION ONLY: FormSubmit sends a one-time
+// confirmation email to TEAM_EMAIL that must be clicked to activate this
+// endpoint for future submissions. See claude/brand-a-push.md for details.
+const LEAD_ENDPOINT = 'https://formsubmit.co/ajax/' + TEAM_EMAIL;
+
+const layoutsBySize = {
+  "20ft": [
+    { value: "20ft-A", label: "Layout A", desc: "Open plan living + bathroom" },
+    { value: "20ft-B", label: "Layout B", desc: "Living + separate bedroom + bath" },
+    { value: "20ft-C", label: "Layout C", desc: "Two rooms + bathroom" },
+    { value: "20ft-D", label: "Layout D", desc: "Compact studio style" },
+    { value: "20ft-E", label: "Layout E", desc: "Central bathroom split" },
+    { value: "20ft-F", label: "Layout F", desc: "Two bedrooms + living" },
+    { value: "20ft-G", label: "Layout G", desc: "Cross layout with bath" },
+    { value: "20ft-H", label: "Layout H", desc: "Four-room style" },
+    { value: "20ft-I", label: "Layout I", desc: "Open living + two rooms" }
+  ],
+  "30ft": [
+    { value: "30ft-A", label: "Layout A", desc: "Open plan + bath" },
+    { value: "30ft-B", label: "Layout B", desc: "Living + bedroom + bath" },
+    { value: "30ft-C", label: "Layout C", desc: "Two bedrooms style" },
+    { value: "30ft-D", label: "Layout D", desc: "Long living + bath" },
+    { value: "30ft-E", label: "Layout E", desc: "Split living areas" },
+    { value: "30ft-F", label: "Layout F", desc: "Three room layout" },
+    { value: "30ft-G", label: "Layout G", desc: "Dual bathrooms option" },
+    { value: "30ft-H", label: "Layout H", desc: "Central corridor" },
+    { value: "30ft-I", label: "Layout I", desc: "Four-room configuration" },
+    { value: "30ft-J", label: "Layout J", desc: "Two bed + two bath" },
+    { value: "30ft-K", label: "Layout K", desc: "Open + side rooms" },
+    { value: "30ft-L", label: "Layout L", desc: "Extended living" }
+  ],
+  "40ft": [
+    { value: "40ft-A", label: "Layout A", desc: "Large open plan" },
+    { value: "40ft-B", label: "Layout B", desc: "Living + bedroom split" },
+    { value: "40ft-C", label: "Layout C", desc: "Three room linear" },
+    { value: "40ft-D", label: "Layout D", desc: "Dual living + baths" },
+    { value: "40ft-E", label: "Layout E", desc: "Central living core" },
+    { value: "40ft-F", label: "Layout F", desc: "Two bed + two bath" },
+    { value: "40ft-G", label: "Layout G", desc: "Four room layout" },
+    { value: "40ft-H", label: "Layout H", desc: "Master + secondary" },
+    { value: "40ft-I", label: "Layout I", desc: "Extended family style" },
+    { value: "40ft-J", label: "Layout J", desc: "Open + private wings" },
+    { value: "40ft-K", label: "Layout K", desc: "Multiple bathrooms" },
+    { value: "40ft-L", label: "Layout L", desc: "Studio + bedrooms" },
+    { value: "40ft-M", label: "Layout M", desc: "Four bedroom capable" },
+    { value: "40ft-N", label: "Layout N", desc: "Hotel-style rooms" },
+    { value: "40ft-O", label: "Layout O", desc: "Symmetrical dual units" },
+    { value: "40ft-P", label: "Layout P", desc: "Open plan luxury" },
+    { value: "40ft-Q", label: "Layout Q", desc: "Multi-bath family" },
+    { value: "40ft-R", label: "Layout R", desc: "Maximum rooms" }
+  ],
+  "Custom": [
+    { value: "Custom layout", label: "Custom Layout", desc: "Describe in notes later" }
+  ]
+};
+
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.option-card');
+  if (!card) return;
+
+  const group = card.dataset.group;
+  const value = card.dataset.value;
+  const parent = card.parentElement;
+  const isMulti = card.classList.contains('multi');
+
+  if (isMulti && group) {
+    if (value.indexOf('None') === 0) {
+      parent.querySelectorAll('.option-card').forEach(function(c) {
+        c.classList.remove('selected');
+      });
+      card.classList.add('selected');
+      selections[group === 'kitchenUpgrade' ? 'kitchenUpgrades' : 'bathroomUpgrades'] = [value];
+    } else {
+      parent.querySelectorAll('.option-card').forEach(function(c) {
+        if (c.dataset.value && c.dataset.value.indexOf('None') === 0) c.classList.remove('selected');
+      });
+      card.classList.toggle('selected');
+      const selected = [];
+      parent.querySelectorAll('.option-card.selected').forEach(function(c) {
+        selected.push(c.dataset.value);
+      });
+      if (group === 'kitchenUpgrade') selections.kitchenUpgrades = selected;
+      else if (group === 'bathroomUpgrade') selections.bathroomUpgrades = selected;
+    }
+  } else if (group) {
+    parent.querySelectorAll('[data-group="' + group + '"]').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    card.classList.add('selected');
+    selections[group] = value;
+  } else if (card.closest('#sizeOptions')) {
+    parent.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
+    card.classList.add('selected');
+    selections.size = value;
+    document.getElementById('next2').disabled = false;
+  } else if (card.closest('#layoutOptions')) {
+    parent.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
+    card.classList.add('selected');
+    selections.layout = value;
+    document.getElementById('next3').disabled = false;
+  }
+
+  checkStepReady();
+});
+
+function checkStepReady() {
+  if (currentStep === 1) document.getElementById('next1').disabled = !selections.model;
+  if (currentStep === 4) document.getElementById('next4').disabled = !selections.roof;
+  if (currentStep === 7) document.getElementById('next7').disabled = !(selections.wallType && selections.exteriorColour);
+  if (currentStep === 8) document.getElementById('next8').disabled = !(selections.door && selections.windows && selections.flooring);
+}
+
+function populateLayouts() {
+  const container = document.getElementById('layoutOptions');
+  container.innerHTML = '';
+  const list = layoutsBySize[selections.size] || layoutsBySize["Custom"];
+  list.forEach(function(item) {
+    const div = document.createElement('div');
+    div.className = 'option-card';
+    div.dataset.value = item.value;
+    div.innerHTML = '<h3>' + item.label + '</h3><p>' + item.desc + '</p>';
+    container.appendChild(div);
+  });
+  document.getElementById('next3').disabled = true;
+  selections.layout = null;
+}
+
+function updateProgress() {
+  const pct = (currentStep / totalSteps) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepIndicator').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+  const names = ['', 'Model Style', 'Size', 'Floor Plan', 'Roof & Terrace', 'Kitchen', 'Bathroom', 'Exterior', 'Doors & Floors', 'Extras', 'Submit'];
+  document.getElementById('stepName').textContent = names[currentStep] || '';
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  const panel = document.querySelector('.step-panel[data-step="' + n + '"]');
+  if (panel) {
+    panel.style.display = 'block';
+    panel.classList.add('active');
+  }
+  currentStep = n;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep() {
+  if (currentStep === 2) populateLayouts();
+  if (currentStep === 9) buildSummary();
+  if (currentStep < totalSteps) showStep(currentStep + 1);
+}
+
+function prevStep() {
+  if (currentStep > 1) showStep(currentStep - 1);
+}
+
+function getExtraValues() {
+  return {
+    quantity: document.getElementById('quantity') ? document.getElementById('quantity').value : '1',
+    insulation: document.getElementById('insulation') ? document.getElementById('insulation').value : '',
+    deliveryLocation: document.getElementById('deliveryLocation') ? document.getElementById('deliveryLocation').value.trim() : '',
+    timeline: document.getElementById('timeline') ? document.getElementById('timeline').value : ''
+  };
+}
+
+function getCustomerValues() {
+  return {
+    name: document.getElementById('customerName') ? document.getElementById('customerName').value.trim() : '',
+    email: document.getElementById('customerEmail') ? document.getElementById('customerEmail').value.trim() : '',
+    phone: document.getElementById('customerPhone') ? document.getElementById('customerPhone').value.trim() : '',
+    notes: document.getElementById('customerNotes') ? document.getElementById('customerNotes').value.trim() : ''
+  };
+}
+
+function buildSummary() {
+  const extras = getExtraValues();
+  const box = document.getElementById('summaryBox');
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+
+  const rows = [
+    ['Model Style', selections.model],
+    ['Size', selections.size],
+    ['Layout', selections.layout],
+    ['Roof / Terrace', selections.roof],
+    ['Kitchen Base', selections.kitchenBase],
+    ['Kitchen Upgrades', kitchenUp],
+    ['Benchtop', selections.benchtop],
+    ['Bathroom Base', selections.bathroomBase],
+    ['Bathroom Shape', selections.bathroomShape],
+    ['Bathroom Upgrades', bathUp],
+    ['Wall Type', selections.wallType],
+    ['Exterior Colour', selections.exteriorColour],
+    ['Door', selections.door],
+    ['Windows', selections.windows],
+    ['Flooring', selections.flooring],
+    ['Quantity', extras.quantity],
+    ['Insulation', extras.insulation],
+    ['Timeline', extras.timeline]
+  ];
+  if (extras.deliveryLocation) rows.push(['Delivery', extras.deliveryLocation]);
+
+  let html = '<h3>Your Configuration Summary</h3>';
+  rows.forEach(function(r) {
+    html += '<div class="summary-row"><span class="summary-label">' + r[0] + '</span><span class="summary-value">' + (r[1] || '-') + '</span></div>';
+  });
+  box.innerHTML = html;
+}
+
+function buildPrintTable() {
+  const extras = getExtraValues();
+  const cust = getCustomerValues();
+  const now = new Date().toLocaleString();
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+
+  document.getElementById('printMeta').textContent =
+    'Prepared: ' + now +
+    (cust.name ? '  |  Customer: ' + cust.name : '') +
+    (cust.email ? '  |  ' + cust.email : '');
+
+  const rows = [
+    ['Model Style', selections.model],
+    ['Size', selections.size],
+    ['Layout', selections.layout],
+    ['Roof / Terrace / Balcony', selections.roof],
+    ['Kitchen Base', selections.kitchenBase],
+    ['Kitchen Upgrades', kitchenUp],
+    ['Benchtop Colour', selections.benchtop],
+    ['Bathroom Base', selections.bathroomBase],
+    ['Bathroom Shape', selections.bathroomShape],
+    ['Bathroom Upgrades', bathUp],
+    ['Wall Type', selections.wallType],
+    ['Exterior Colour', selections.exteriorColour],
+    ['Entrance Door', selections.door],
+    ['Windows', selections.windows],
+    ['Flooring', selections.flooring],
+    ['Quantity', extras.quantity],
+    ['Insulation', extras.insulation],
+    ['Preferred Timeline', extras.timeline],
+    ['Delivery Location', extras.deliveryLocation || '-'],
+    ['Customer Name', cust.name || '-'],
+    ['Email', cust.email || '-'],
+    ['Phone', cust.phone || '-'],
+    ['Notes', cust.notes || '-']
+  ];
+
+  let html = '';
+  rows.forEach(function(r) {
+    html += '<tr><th>' + r[0] + '</th><td>' + (r[1] || '-') + '</td></tr>';
+  });
+  document.getElementById('printTable').innerHTML = html;
+}
+
+function downloadPDF() {
+  buildPrintTable();
+  window.print();
+}
+
+function buildLeadPayload(cust, extras) {
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+  return {
+    _subject: 'Fold Out Homes Quote Request - ' + cust.name + ' - ' + selections.model + ' ' + selections.size,
+    name: cust.name,
+    email: cust.email,
+    phone: cust.phone || 'N/A',
+    model_style: selections.model,
+    size: selections.size,
+    layout: selections.layout,
+    roof_terrace: selections.roof,
+    kitchen_base: selections.kitchenBase,
+    kitchen_upgrades: kitchenUp,
+    benchtop: selections.benchtop,
+    bathroom_base: selections.bathroomBase,
+    bathroom_shape: selections.bathroomShape,
+    bathroom_upgrades: bathUp,
+    wall_type: selections.wallType,
+    exterior_colour: selections.exteriorColour,
+    door: selections.door,
+    windows: selections.windows,
+    flooring: selections.flooring,
+    quantity: extras.quantity,
+    insulation: extras.insulation,
+    timeline: extras.timeline,
+    delivery_location: extras.deliveryLocation || 'Not specified',
+    notes: cust.notes || 'None',
+    submitted_at: new Date().toLocaleString(),
+    lead_source: 'Configurator-direct',
+    _template: 'table',
+    // Customer-facing confirmation email, sent automatically by FormSubmit to
+    // the address in cust.email. DRAFT COPY — per the project's standing rule
+    // ("sending real emails to prospects needs sign-off before it goes live"),
+    // Paul should read/edit this line before this file goes live. Edit the
+    // text below directly to change what customers receive.
+    _autoresponse: "Thanks for sending through your Fold Out Homes configuration - we've received it and will be in touch with your formal quote. This was a configuration request only; final pricing and specifications are confirmed in your formal quote. Please note this unit is sold as a structure - council/building approval for permanent occupancy is the buyer's responsibility, and we're happy to talk through what that looks like for your site. Questions in the meantime? Call or text 0488 333 336. - Fold Out Homes"
+  };
+}
+
+function emailTeam() {
+  const extras = getExtraValues();
+  const cust = getCustomerValues();
+  if (!cust.name || !cust.email) {
+    alert('Please enter your name and email first.');
+    return;
+  }
+
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+
+  const subject = encodeURIComponent('Fold Out Homes Quote Request - ' + cust.name + ' - ' + selections.model + ' ' + selections.size);
+  const body = encodeURIComponent(
+`New quote request from Fold Out Homes Custom Options Selector
+
+CUSTOMER
+Name: ${cust.name}
+Email: ${cust.email}
+Phone: ${cust.phone || 'N/A'}
+
+MODEL & SIZE
+Model Style: ${selections.model}
+Size: ${selections.size}
+Layout: ${selections.layout}
+Roof / Terrace: ${selections.roof}
+
+KITCHEN
+Base: ${selections.kitchenBase}
+Upgrades: ${kitchenUp}
+Benchtop: ${selections.benchtop}
+
+BATHROOM
+Base: ${selections.bathroomBase}
+Shape: ${selections.bathroomShape}
+Upgrades: ${bathUp}
+
+EXTERIOR & FITTINGS
+Wall Type: ${selections.wallType}
+Colour: ${selections.exteriorColour}
+Door: ${selections.door}
+Windows: ${selections.windows}
+Flooring: ${selections.flooring}
+
+EXTRAS
+Quantity: ${extras.quantity}
+Insulation: ${extras.insulation}
+Timeline: ${extras.timeline}
+Delivery: ${extras.deliveryLocation || 'Not specified'}
+
+Notes:
+${cust.notes || 'None'}
+
+Submitted: ${new Date().toLocaleString()}
+`);
+
+  window.location.href = 'mailto:' + TEAM_EMAIL + '?subject=' + subject + '&body=' + body;
+}
+
+function showFinalSummary(cust, extras) {
+  const finalBox = document.getElementById('finalSummary');
+  finalBox.innerHTML =
+    '<h3>Submitted Configuration</h3>' +
+    '<div class="summary-row"><span class="summary-label">Customer</span><span class="summary-value">' + cust.name + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Model</span><span class="summary-value">' + selections.model + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Size / Layout</span><span class="summary-value">' + selections.size + ' / ' + selections.layout + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Quantity</span><span class="summary-value">' + extras.quantity + '</span></div>';
+}
+
+function submitQuote() {
+  const cust = getCustomerValues();
+  if (!cust.name || !cust.email) {
+    alert('Please enter your name and email so we can return the quote.');
+    return;
+  }
+
+  const extras = getExtraValues();
+  const errorNote = document.getElementById('submitError');
+  const btn = document.getElementById('submitBtn');
+  errorNote.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  fetch(LEAD_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(buildLeadPayload(cust, extras))
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('Lead endpoint returned ' + res.status);
+    document.querySelectorAll('.step-panel').forEach(function(p) { p.style.display = 'none'; });
+    const success = document.getElementById('successPanel');
+    success.style.display = 'block';
+    success.classList.add('active');
+    showFinalSummary(cust, extras);
+  })
+  .catch(function(err) {
+    console.error('Lead submit failed', err);
+    errorNote.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Quote Request';
+  });
+}
+
+updateProgress();
+</script>
+</body>
+</html>
