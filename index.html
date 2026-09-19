@@ -52,8 +52,20 @@
     padding: 0.65rem 1rem;
   }
   .review-launch:hover { background: var(--primary-dark); }
-  .brand-lockup { display: flex; align-items: center; }
-  .site-logo { display: block; width: min(360px, 50vw); height: 78px; object-fit: contain; object-position: left center; }
+  .brand-lockup {
+    display: flex;
+    align-items: center;
+    width: min(390px, 52vw);
+    height: 110px;
+    overflow: hidden;
+  }
+  .site-logo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
   .container { max-width: 1080px; margin: 0 auto; padding: 1.15rem; }
   .price-banner {
     background: linear-gradient(135deg, var(--gold), #d4a017);
@@ -669,7 +681,7 @@
     .home-hero { grid-template-columns: 1fr; }
     .home-hero-image { min-height: 210px; order: -1; }
     .home-hero-copy { padding: 1.35rem; }
-    .site-logo { width: min(320px, 72vw); height: 68px; }
+    .brand-lockup { width: min(320px, 82vw); height: 92px; }
     .inclusions-grid, .completed-homes-grid, .next-steps { grid-template-columns: 1fr; }
     .completed-home img { height: 210px; }
   }
