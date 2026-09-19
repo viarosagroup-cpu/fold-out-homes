@@ -335,26 +335,45 @@
   }
   .option-card.style-card .card-body { padding: 0.75rem 0.85rem 0.9rem; }
   .option-card.style-card.selected img { filter: brightness(0.97); }
+  .exterior-grid .style-card img { height: 125px; }
+  .supplier-code {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: #e4f0e9;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+  .custom-finish {
+    margin-top: 0.7rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fafaf7;
+  }
+  .custom-finish summary { cursor: pointer; font-weight: 600; color: var(--primary); }
   .option-card.best-seller-card {
     grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: minmax(220px, 340px) 1fr;
-    align-items: stretch;
+    display: block;
   }
   .option-card.best-seller-card img {
     width: 100%;
-    height: 100%;
-    min-height: 180px;
+    height: 220px;
     object-fit: cover;
-    border-radius: 8px 0 0 8px;
+    display: block;
+    border-radius: 8px 8px 0 0;
   }
   .option-card.best-seller-card .card-body {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1rem 1.3rem;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 0.9rem 1.3rem;
+    flex-wrap: wrap;
   }
-  .option-card.best-seller-card h3 { font-size: 1.25rem; }
+  .option-card.best-seller-card .card-body h3 { font-size: 1.1rem; margin: 0; }
+  .option-card.best-seller-card .card-body p { margin: 0; flex: 1 1 320px; }
   .best-seller-badge {
     display: inline-block;
     background: #e8b923;
@@ -365,17 +384,16 @@
     text-transform: uppercase;
     padding: 0.2rem 0.6rem;
     border-radius: 999px;
-    margin-bottom: 0.45rem;
     width: fit-content;
   }
   @media (max-width: 640px) {
-    .option-card.best-seller-card {
-      grid-template-columns: 1fr;
-    }
     .option-card.best-seller-card img {
       height: 160px;
-      min-height: unset;
-      border-radius: 8px 8px 0 0;
+    }
+    .option-card.best-seller-card .card-body {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
     }
   }
   .gallery-strip {
@@ -825,30 +843,53 @@
   <!-- STEP 7: Exterior -->
   <div class="step-panel" data-step="7">
     <h2 class="step-title">7. Exterior Cladding</h2>
-    <p class="step-desc">Choose wallboard type and colour family.</p>
+    <p class="step-desc">Choose the wall type, then one of our featured finishes. Want something different? You can still request it below.</p>
     <div class="section-label">Wallboard Type</div>
     <div class="option-grid" style="margin-bottom:1.1rem;">
       <div class="option-card" data-group="wallType" data-value="Metal Carved Board">
         <h3>Metal Carved Board</h3>
-        <p>Premium textured (brick, stone, wood looks)</p>
+        <p>Textured brick and timber looks</p>
       </div>
       <div class="option-card" data-group="wallType" data-value="Common Colour Steel">
         <h3>Common Colour Steel</h3>
-        <p>Smooth finish - wide colour range</p>
+        <p>Smooth, simple colour finish</p>
       </div>
     </div>
-    <div class="section-label">Exterior Colour / Finish</div>
-    <p class="section-sub-note">We offer a wide range of exterior cladding colours and finishes — close to any colour is possible. If you know the product code, note it below; otherwise just describe the colour or look you want and we'll confirm exact availability with you.</p>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="exteriorCode">Product code (if known)</label>
-        <input type="text" id="exteriorCode" placeholder="e.g. L-017">
+    <div class="section-label">Featured Exterior Finishes</div>
+    <div class="option-grid exterior-grid" style="margin-bottom:1rem;">
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-005 - Angel White" data-code="D-005" data-name="Angel White">
+        <img src="cladding/D-005.jpg" alt="Angel White exterior cladding, supplier code D-005" loading="lazy">
+        <div class="card-body"><h3>Angel White</h3><p>Clean, bright exterior</p><span class="supplier-code">D-005</span></div>
       </div>
-      <div class="form-group">
-        <label for="exteriorColourNote">Preferred colour / finish</label>
-        <input type="text" id="exteriorColourNote" placeholder="e.g. deep grey, angel white, brick red">
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-001 - Soft Grey Brick" data-code="D-001" data-name="Soft Grey Brick">
+        <img src="cladding/D-001.jpg" alt="Soft Grey Brick exterior cladding, supplier code D-001" loading="lazy">
+        <div class="card-body"><h3>Soft Grey Brick</h3><p>Neutral grey brick look</p><span class="supplier-code">D-001</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-010 - Warm Beige Brick" data-code="D-010" data-name="Warm Beige Brick">
+        <img src="cladding/D-010.jpg" alt="Warm Beige Brick exterior cladding, supplier code D-010" loading="lazy">
+        <div class="card-body"><h3>Warm Beige Brick</h3><p>Warm natural brick look</p><span class="supplier-code">D-010</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-011 - Brick Red" data-code="D-011" data-name="Brick Red">
+        <img src="cladding/D-011.jpg" alt="Brick Red exterior cladding, supplier code D-011" loading="lazy">
+        <div class="card-body"><h3>Brick Red</h3><p>Classic deeper brick tone</p><span class="supplier-code">D-011</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-051 - Pine Timber" data-code="D-051" data-name="Pine Timber">
+        <img src="cladding/D-051.jpg" alt="Pine Timber exterior cladding, supplier code D-051" loading="lazy">
+        <div class="card-body"><h3>Pine Timber</h3><p>Warm timber-look finish</p><span class="supplier-code">D-051</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-052 - Dark Timber" data-code="D-052" data-name="Dark Timber">
+        <img src="cladding/D-052.jpg" alt="Dark Timber exterior cladding, supplier code D-052" loading="lazy">
+        <div class="card-body"><h3>Dark Timber</h3><p>Deeper contemporary timber look</p><span class="supplier-code">D-052</span></div>
       </div>
     </div>
+    <details class="custom-finish">
+      <summary>I'd like a different colour or finish</summary>
+      <div class="form-row" style="margin-top:.8rem;">
+        <div class="form-group"><label for="exteriorCode">Supplier code (if known)</label><input type="text" id="exteriorCode" placeholder="e.g. D-080"></div>
+        <div class="form-group"><label for="exteriorColourNote">Preferred colour / finish</label><input type="text" id="exteriorColourNote" placeholder="e.g. charcoal, stone look"></div>
+      </div>
+    </details>
+    <p class="section-sub-note">Supplier swatches are a visual guide. Final colour and texture should be confirmed from a physical sample before order.</p>
     <div class="nav-buttons">
       <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
       <button class="btn-primary" onclick="nextStep()" id="next7" disabled>Next -&gt;</button>
@@ -1245,6 +1286,12 @@ document.addEventListener('click', function(e) {
     });
     card.classList.add('selected');
     selections[group] = value;
+    if (group === 'exteriorColour' && card.dataset.code) {
+      const codeInput = document.getElementById('exteriorCode');
+      const noteInput = document.getElementById('exteriorColourNote');
+      if (codeInput) codeInput.value = card.dataset.code;
+      if (noteInput) noteInput.value = card.dataset.name || '';
+    }
   } else if (card.closest('#sizeOptions')) {
     parent.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
     card.classList.add('selected');
