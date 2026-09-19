@@ -560,35 +560,25 @@
     </div>
   </div>
 
-  <!-- STEP 4: Roof / Terrace / Balcony -->
+  <!-- STEP 4: Roof / Front Verandah -->
   <div class="step-panel" data-step="4">
-    <h2 class="step-title">4. Roof, Terrace and Balcony</h2>
-    <p class="step-desc">Choose outdoor living and roof options.</p>
+    <h2 class="step-title">4. Roof and Front Verandah</h2>
+    <p class="step-desc">Choose a pitched roof to the house, with or without a covered front verandah.</p>
     <div class="option-grid">
-      <div class="option-card" data-group="roof" data-value="Standard roof only">
-        <h3>Standard Roof Only</h3>
-        <p>No extra outdoor structure</p>
+      <div class="option-card style-card" data-group="roof" data-value="Pitched roof to house">
+        <img src="style-long-house.jpg" alt="Fold Out Home with pitched roof to the house" loading="lazy">
+        <div class="card-body">
+          <h3>Pitched Roof to House</h3>
+          <p>Pitched roof over the main house, without a front verandah.</p>
+        </div>
       </div>
-      <div class="option-card" data-group="roof" data-value="Side terrace / balcony">
-        <h3>Side Terrace / Balcony</h3>
-        <p>Roofed 3m verandah with railing</p>
-        <span class="price-tag">+$5,000 &middot; $32,990 total</span>
-      </div>
-      <div class="option-card" data-group="roof" data-value="Rooftop terrace">
-        <h3>Rooftop Terrace</h3>
-        <p>Full or partial roof deck</p>
-      </div>
-      <div class="option-card" data-group="roof" data-value="Side + Rooftop">
-        <h3>Side + Rooftop</h3>
-        <p>Maximum outdoor space</p>
-      </div>
-      <div class="option-card" data-group="roof" data-value="Support frame / elevated">
-        <h3>Support Frame / Elevated</h3>
-        <p>Raised on steel frame with stairs</p>
-      </div>
-      <div class="option-card" data-group="roof" data-value="Glass curtain wall option">
-        <h3>Glass Curtain Wall</h3>
-        <p>Premium glazed facade option</p>
+      <div class="option-card style-card" data-group="roof" data-value="Pitched roof with 3m front verandah / terrace">
+        <img src="roof-front-verandah-3m.jpeg" alt="Fold Out Home with pitched roof and 3 metre front verandah terrace" loading="lazy">
+        <div class="card-body">
+          <h3>Front Verandah / Terrace</h3>
+          <p>Pitched roof with a covered verandah extending 3 metres from the front of the house.</p>
+          <span class="price-tag">+$5,000 &middot; $32,990 total</span>
+        </div>
       </div>
     </div>
     <div class="nav-buttons">
@@ -1371,7 +1361,7 @@ function buildSummary() {
     ['Model Style', selections.model],
     ['Size', selections.size],
     ['Layout', selections.layout],
-    ['Roof / Terrace', selections.roof],
+    ['Roof / Front Verandah', selections.roof],
     ['Kitchen Layout', selections.kitchenBase],
     ['Kitchen Finish', selections.kitchenFinish],
     ['Kitchen Upgrades', kitchenUp],
@@ -1418,7 +1408,7 @@ function buildPrintTable() {
     ['Model Style', selections.model],
     ['Size', selections.size],
     ['Layout', selections.layout],
-    ['Roof / Terrace / Balcony', selections.roof],
+    ['Roof / Front Verandah', selections.roof],
     ['Kitchen Layout', selections.kitchenBase],
     ['Kitchen Finish', selections.kitchenFinish],
     ['Kitchen Upgrades', kitchenUp],
@@ -1528,7 +1518,7 @@ MODEL & SIZE
 Model Style: ${selections.model}
 Size: ${selections.size}
 Layout: ${selections.layout}
-Roof / Terrace: ${selections.roof}
+Roof / Front Verandah: ${selections.roof}
 
 KITCHEN
 Layout: ${selections.kitchenBase}
