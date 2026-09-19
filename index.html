@@ -4,18 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fold Out Homes - Custom Options Selector</title>
+<link rel="icon" type="image/png" href="foldouthomes-icon.png">
 <style>
   :root {
-    --primary: #1a3c2e;
-    --primary-dark: #0f241c;
-    --accent: #c0392b;
-    --bg: #f6f4ef;
+    --primary: #061d4f;
+    --primary-dark: #031332;
+    --accent: #b88716;
+    --bg: #f4f6fa;
     --card: #ffffff;
     --text: #1a1a1a;
     --muted: #5c6570;
-    --border: #e2dfd6;
+    --border: #dce1ea;
     --success: #059669;
-    --gold: #b8860b;
+    --gold: #b88716;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -26,10 +27,11 @@
     min-height: 100vh;
   }
   header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    padding: 1.1rem 1.4rem;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+    background: white;
+    color: var(--primary);
+    padding: 0.65rem 1.4rem;
+    box-shadow: 0 4px 18px rgba(3,19,50,0.12);
+    border-bottom: 3px solid var(--gold);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -43,26 +45,15 @@
     gap: 1rem;
   }
   .review-launch {
-    background: white;
-    color: var(--primary);
-    border: 0;
+    background: var(--primary);
+    color: white;
+    border: 1px solid var(--primary);
     white-space: nowrap;
     padding: 0.65rem 1rem;
   }
-  .review-launch:hover { background: #eef6f1; }
-  .brand-lockup { display: flex; align-items: center; gap: 0.65rem; }
-  .brand-mark {
-    display: grid;
-    place-items: center;
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-    border: 2px solid rgba(255,255,255,0.78);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-  }
+  .review-launch:hover { background: var(--primary-dark); }
+  .brand-lockup { display: flex; align-items: center; }
+  .site-logo { display: block; width: min(360px, 50vw); height: 78px; object-fit: contain; object-position: left center; }
   .container { max-width: 1080px; margin: 0 auto; padding: 1.15rem; }
   .price-banner {
     background: linear-gradient(135deg, var(--gold), #d4a017);
@@ -129,6 +120,7 @@
   .info-section > p { color: var(--muted); font-size: 0.86rem; margin-bottom: 1rem; }
   .inclusions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
   .inclusion-card { padding: 0.9rem; border-radius: 9px; background: #eef6f1; border: 1px solid #c5ddd0; }
+  .inclusion-card { background: #eef3fb; border-color: #cad6eb; }
   .inclusion-card strong { display: block; color: var(--primary); margin-bottom: 0.2rem; font-size: 0.88rem; }
   .inclusion-card span { color: var(--muted); font-size: 0.76rem; line-height: 1.4; }
   .electrical-inclusion { background: #fff7d6; border-color: #ead27a; }
@@ -246,13 +238,13 @@
   }
   .option-card:hover {
     border-color: var(--primary);
-    background: #eef6f1;
+    background: #f1f5fb;
     transform: translateY(-1px);
   }
   .option-card.selected {
     border-color: var(--primary);
-    background: #e4f0e9;
-    box-shadow: 0 0 0 3px rgba(26,60,46,0.16);
+    background: #eaf0fb;
+    box-shadow: 0 0 0 3px rgba(6,29,79,0.14);
   }
   .option-card.selected::after {
     content: "\2713";
@@ -338,8 +330,8 @@
   .btn-email { background: #0f766e; color: white; padding: 0.85rem 1.25rem; }
   .btn-email:hover { background: #0d9488; }
   .summary-box {
-    background: #eef6f1;
-    border: 1px solid #c5ddd0;
+    background: #eef3fb;
+    border: 1px solid #cad6eb;
     border-radius: 10px;
     padding: 1.15rem;
     margin-bottom: 1.15rem;
@@ -349,7 +341,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0.35rem 0;
-    border-bottom: 1px solid #d0e5da;
+    border-bottom: 1px solid #d6e0f0;
     font-size: 0.88rem;
   }
   .summary-row:last-child { border-bottom: none; }
@@ -469,7 +461,7 @@
     font-size: 0.7rem;
     font-weight: 700;
     color: var(--primary);
-    background: #e4f0e9;
+    background: #eaf0fb;
     padding: 0.15rem 0.45rem;
     border-radius: 999px;
   }
@@ -557,8 +549,8 @@
     gap: 1rem;
     padding: 1rem 1.15rem;
     margin-bottom: 1.1rem;
-    background: #eef6f1;
-    border: 1px solid #c5ddd0;
+    background: #fff7df;
+    border: 1px solid #ead49a;
     border-radius: 11px;
   }
   .customer-review-callout h2 { color: var(--primary); font-size: 1rem; margin-bottom: 0.15rem; }
@@ -677,6 +669,7 @@
     .home-hero { grid-template-columns: 1fr; }
     .home-hero-image { min-height: 210px; order: -1; }
     .home-hero-copy { padding: 1.35rem; }
+    .site-logo { width: min(320px, 72vw); height: 68px; }
     .inclusions-grid, .completed-homes-grid, .next-steps { grid-template-columns: 1fr; }
     .completed-home img { height: 210px; }
   }
@@ -686,11 +679,7 @@
 <header>
   <div class="container header-inner" style="padding:0;">
     <div class="brand-lockup" aria-label="Fold Out Homes">
-      <div class="brand-mark" aria-hidden="true">FOH</div>
-      <div>
-        <h1>FOLD OUT HOMES</h1>
-        <p>Expandable homes configured for your needs</p>
-      </div>
+      <img class="site-logo" src="foldouthomes-logo.png" alt="FoldoutHomes, Small Home, Big Lifestyle.">
     </div>
     <button class="review-launch" type="button" onclick="openReviewForm()">Leave a customer review</button>
   </div>
