@@ -1,0 +1,34 @@
+FOLD OUT HOMES CUSTOMER REVIEW QUESTIONS
+
+Purchase verification (kept private)
+1. What is your full name?
+2. What email address did you use for your purchase?
+3. What is your order or invoice number? (Optional)
+4. Where are you up to: order placed, delivered, installed, under 3 months, 3 to 12 months, or over 12 months?
+5. Which Fold Out Homes model or style did you purchase?
+6. What size is your home: 20 ft, 30 ft, 40 ft, or custom?
+
+Ratings (1 = very poor, 5 = excellent)
+7. How would you rate the product quality, including the build, materials and finishes?
+8. How accurately did the completed home match what was shown and agreed?
+9. How would you rate our communication, helpfulness and response times?
+10. How would you rate delivery, setup and handover?
+11. How would you rate the overall value for money?
+12. From 0 to 10, how likely are you to recommend Fold Out Homes?
+
+Written feedback
+13. What did we do well?
+14. What could we improve?
+15. What name and location would you like displayed with your review? For example, "Paul R., Brisbane".
+16. Do you give Fold Out Homes permission to publish your ratings and comments after customer verification?
+17. May we contact you about supplying customer photos or a short video testimonial?
+
+SCORING METHOD
+The customer trust score is shown out of 10 and uses these weights:
+- Product quality: 30%
+- Accuracy: 15%
+- Communication: 15%
+- Delivery and setup: 25%
+- Value for money: 15%
+
+Only verified customer reviews should be included in the public combined score.

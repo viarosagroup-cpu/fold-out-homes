@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fold Out Homes - Custom Options Selector</title>
+<style>
+  :root {
+    --primary: #1a3c2e;
+    --primary-dark: #0f241c;
+    --accent: #c0392b;
+    --bg: #f6f4ef;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #5c6570;
+    --border: #e2dfd6;
+    --success: #059669;
+    --gold: #b8860b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 1.1rem 1.4rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+  header p { opacity: 0.88; font-size: 0.85rem; margin-top: 0.15rem; }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .review-launch {
+    background: white;
+    color: var(--primary);
+    border: 0;
+    white-space: nowrap;
+    padding: 0.65rem 1rem;
+  }
+  .review-launch:hover { background: #eef6f1; }
+  .brand-lockup { display: flex; align-items: center; gap: 0.65rem; }
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border: 2px solid rgba(255,255,255,0.78);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 1.15rem; }
+  .price-banner {
+    background: linear-gradient(135deg, var(--gold), #d4a017);
+    color: white;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    letter-spacing: 0.01em;
+  }
+  .price-banner span {
+    display: block;
+    font-weight: 400;
+    font-size: 0.78rem;
+    opacity: 0.92;
+    margin-top: 0.15rem;
+  }
+  .home-hero {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    min-height: 360px;
+    margin-bottom: 1.1rem;
+    overflow: hidden;
+    border-radius: 14px;
+    color: white;
+    background: var(--primary-dark);
+    box-shadow: 0 10px 30px rgba(15,36,28,0.2);
+  }
+  .home-hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
+  .hero-eyebrow {
+    margin-bottom: 0.65rem;
+    color: #f2cf65;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  .home-hero h2 { max-width: 550px; font-size: clamp(1.9rem, 4vw, 3.2rem); line-height: 1.03; }
+  .home-hero p { max-width: 520px; margin: 1rem 0 1.25rem; color: rgba(255,255,255,0.86); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+  .hero-primary { color: var(--primary-dark); background: white; }
+  .hero-primary:hover { background: #eef6f1; }
+  .hero-secondary { color: white; background: transparent; border: 1px solid rgba(255,255,255,0.55); }
+  .hero-secondary:hover { background: rgba(255,255,255,0.1); }
+  .home-hero-image { min-height: 320px; }
+  .home-hero-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .info-section {
+    margin-bottom: 1.1rem;
+    padding: 1.25rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.04);
+  }
+  .info-section > h2 { color: var(--primary); font-size: 1.2rem; margin-bottom: 0.2rem; }
+  .info-section > p { color: var(--muted); font-size: 0.86rem; margin-bottom: 1rem; }
+  .inclusions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+  .inclusion-card { padding: 0.9rem; border-radius: 9px; background: #eef6f1; border: 1px solid #c5ddd0; }
+  .inclusion-card strong { display: block; color: var(--primary); margin-bottom: 0.2rem; font-size: 0.88rem; }
+  .inclusion-card span { color: var(--muted); font-size: 0.76rem; line-height: 1.4; }
+  .electrical-inclusion { background: #fff7d6; border-color: #ead27a; }
+  .electrical-inclusion strong { color: #6d5100; }
+  .not-included {
+    margin-top: 0.8rem;
+    padding: 0.8rem 0.9rem;
+    border-left: 4px solid var(--accent);
+    border-radius: 7px;
+    color: #63312c;
+    background: #fff2f0;
+    font-size: 0.8rem;
+  }
+  .completed-homes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+  .completed-home { overflow: hidden; border-radius: 10px; background: #f5f4ef; border: 1px solid var(--border); }
+  .completed-home img { width: 100%; height: 190px; display: block; object-fit: cover; }
+  .completed-home p { padding: 0.65rem 0.75rem; color: var(--muted); font-size: 0.76rem; }
+  .next-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin: 1rem 0; }
+  .next-step { padding: 0.85rem; border-radius: 8px; background: #f5f4ef; border: 1px solid var(--border); }
+  .next-step-number {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.45rem;
+    border-radius: 50%;
+    color: white;
+    background: var(--primary);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .next-step strong { display: block; color: var(--primary); font-size: 0.84rem; margin-bottom: 0.2rem; }
+  .next-step p { color: var(--muted); font-size: 0.75rem; }
+  .reference-box {
+    margin-bottom: 1rem;
+    padding: 0.75rem 0.9rem;
+    color: white;
+    background: var(--primary);
+    border-radius: 8px;
+    font-size: 0.82rem;
+  }
+  .reference-box strong { font-size: 1rem; letter-spacing: 0.04em; }
+  .verified-reviews { display: none; }
+  .verified-reviews.visible { display: block; }
+  .review-score-line { display: flex; align-items: baseline; gap: 0.55rem; margin-bottom: 0.85rem; }
+  .review-score-line strong { color: var(--primary); font-size: 1.8rem; }
+  .public-review { padding: 0.8rem 0; border-top: 1px solid var(--border); }
+  .public-review p { margin: 0.25rem 0; color: var(--text); }
+  .public-review span { color: var(--muted); font-size: 0.75rem; }
+  .progress-wrap {
+    background: white;
+    border-radius: 11px;
+    padding: 0.8rem 1.15rem;
+    margin-bottom: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+  }
+  .progress-bar {
+    height: 6px;
+    background: #e2dfd6;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #2d6a4f);
+    border-radius: 99px;
+    transition: width 0.35s ease;
+  }
+  .steps-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .step-panel {
+    display: none;
+    background: var(--card);
+    border-radius: 13px;
+    padding: 1.4rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+  }
+  .step-panel.active { display: block; animation: fadeIn 0.28s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: none; }
+  }
+  .step-title {
+    font-size: 1.28rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+  }
+  .step-desc {
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+  }
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 0.8rem;
+  }
+  .option-card {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.16s ease;
+    background: #fafaf7;
+    position: relative;
+    user-select: none;
+  }
+  .option-card:hover {
+    border-color: var(--primary);
+    background: #eef6f1;
+    transform: translateY(-1px);
+  }
+  .option-card.selected {
+    border-color: var(--primary);
+    background: #e4f0e9;
+    box-shadow: 0 0 0 3px rgba(26,60,46,0.16);
+  }
+  .option-card.selected::after {
+    content: "\2713";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: var(--primary);
+    color: white;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .option-card h3 { font-size: 0.92rem; margin-bottom: 0.2rem; }
+  .option-card p { font-size: 0.75rem; color: var(--muted); line-height: 1.35; }
+  .option-card .price-tag {
+    display: inline-block;
+    margin-top: 0.4rem;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+  .color-swatch {
+    width: 100%;
+    height: 38px;
+    border-radius: 6px;
+    margin-bottom: 0.55rem;
+    border: 1px solid #ddd;
+  }
+  .section-label {
+    margin: 1rem 0 0.55rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .section-sub-note {
+    margin: 0.2rem 0 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0.75rem 1.35rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.16s;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-primary:disabled { background: #9ca3af; cursor: not-allowed; }
+  .btn-secondary {
+    background: white;
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+  .btn-secondary:hover { background: #f3f4f6; }
+  .btn-submit {
+    background: var(--accent);
+    color: white;
+    padding: 0.95rem 1.4rem;
+    font-size: 1rem;
+  }
+  .btn-submit:hover { background: #a93226; }
+  .btn-submit:disabled { background: #d3a29c; cursor: not-allowed; }
+  .btn-pdf { background: #1e40af; color: white; padding: 0.85rem 1.25rem; }
+  .btn-pdf:hover { background: #1e3a8a; }
+  .btn-email { background: #0f766e; color: white; padding: 0.85rem 1.25rem; }
+  .btn-email:hover { background: #0d9488; }
+  .summary-box {
+    background: #eef6f1;
+    border: 1px solid #c5ddd0;
+    border-radius: 10px;
+    padding: 1.15rem;
+    margin-bottom: 1.15rem;
+  }
+  .summary-box h3 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1rem; }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #d0e5da;
+    font-size: 0.88rem;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { color: var(--muted); }
+  .summary-value { font-weight: 600; text-align: right; max-width: 58%; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.86rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 2px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.92rem;
+    font-family: inherit;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .form-group textarea { min-height: 85px; resize: vertical; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+  }
+  .note {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    padding: 0.65rem;
+    background: #fef9e7;
+    border-radius: 7px;
+    border-left: 3px solid #f1c40f;
+  }
+  .error-note {
+    font-size: 0.8rem;
+    color: #92400e;
+    margin-top: 0.8rem;
+    padding: 0.65rem;
+    background: #fef3c7;
+    border-radius: 7px;
+    border-left: 3px solid #d97706;
+    display: none;
+  }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--success);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    margin: 0 auto 1.15rem;
+  }
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.15rem;
+  }
+  .action-buttons button { flex: 1; min-width: 130px; }
+
+  @media print {
+    body { background: white; }
+    header, .progress-wrap, .price-banner, .nav-buttons, .action-buttons, .note, .error-note, button { display: none !important; }
+    .step-panel { display: none !important; box-shadow: none; border: none; padding: 0; }
+    #printArea { display: block !important; }
+    #printArea .print-header { border-bottom: 3px solid #1a3c2e; padding-bottom: 10px; margin-bottom: 16px; }
+    #printArea h1 { color: #1a3c2e; font-size: 20px; }
+    #printArea .print-meta { font-size: 11px; color: #555; margin-top: 3px; }
+    #printArea table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    #printArea th, #printArea td { border: 1px solid #ccc; padding: 7px 9px; text-align: left; font-size: 12px; }
+    #printArea th { background: #eef6f1; width: 34%; }
+    #printArea .print-footer { margin-top: 20px; font-size: 10px; color: #666; border-top: 1px solid #ddd; padding-top: 8px; }
+  }
+  #printArea { display: none; }
+
+  @media (max-width: 600px) {
+    .option-grid { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    header { padding: 0.9rem; }
+    .container { padding: 0.8rem; }
+    .step-panel { padding: 1.05rem; }
+    .action-buttons button { min-width: 100%; }
+  }
+
+  .option-card.style-card { padding: 0; overflow: hidden; }
+  .option-card.style-card img {
+    width: 100%;
+    height: 108px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px 8px 0 0;
+  }
+  .option-card.style-card .card-body { padding: 0.75rem 0.85rem 0.9rem; }
+  .option-card.style-card.selected img { filter: brightness(0.97); }
+  .exterior-grid .style-card img {
+    height: 125px;
+    padding: 0.55rem;
+    object-fit: contain;
+    background: linear-gradient(135deg, #263b32, #617069);
+  }
+  .supplier-code {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: #e4f0e9;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+  .custom-finish {
+    margin-top: 0.7rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fafaf7;
+  }
+  .custom-finish summary { cursor: pointer; font-weight: 600; color: var(--primary); }
+  .option-card.best-seller-card {
+    grid-column: 1 / -1;
+    display: block;
+  }
+  .option-card.best-seller-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px 8px 0 0;
+  }
+  .option-card.best-seller-card .card-body {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 0.9rem 1.3rem;
+    flex-wrap: wrap;
+  }
+  .option-card.best-seller-card .card-body h3 { font-size: 1.1rem; margin: 0; }
+  .option-card.best-seller-card .card-body p { margin: 0; flex: 1 1 320px; }
+  .best-seller-badge {
+    display: inline-block;
+    background: #e8b923;
+    color: #1a1a1a;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    width: fit-content;
+  }
+  @media (max-width: 640px) {
+    .option-card.best-seller-card img {
+      height: 160px;
+    }
+    .option-card.best-seller-card .card-body {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+  }
+  .gallery-strip {
+    margin-bottom: 1.1rem;
+  }
+  .gallery-strip h2 {
+    font-size: 1rem;
+    color: var(--primary);
+    margin-bottom: 0.6rem;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+  .gallery-grid img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .gallery-caption {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 1.05rem;
+  }
+  .customer-review-callout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.1rem;
+    background: #eef6f1;
+    border: 1px solid #c5ddd0;
+    border-radius: 11px;
+  }
+  .customer-review-callout h2 { color: var(--primary); font-size: 1rem; margin-bottom: 0.15rem; }
+  .customer-review-callout p { color: var(--muted); font-size: 0.82rem; }
+  .review-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1.25rem;
+    overflow-y: auto;
+    background: rgba(15,36,28,0.82);
+  }
+  .review-modal.open { display: flex; }
+  .review-dialog {
+    width: min(760px, 100%);
+    margin: auto;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .review-dialog-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.25rem;
+    color: white;
+    background: var(--primary);
+  }
+  .review-dialog-head h2 { font-size: 1.25rem; }
+  .review-dialog-head p { margin-top: 0.2rem; font-size: 0.82rem; opacity: 0.88; }
+  .review-close {
+    align-self: flex-start;
+    padding: 0.25rem 0.55rem;
+    color: white;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.5);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .review-form { padding: 1.25rem; }
+  .review-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .review-section:last-of-type { border-bottom: 0; }
+  .review-section h3 { color: var(--primary); font-size: 1rem; margin-bottom: 0.25rem; }
+  .review-section-intro { color: var(--muted); font-size: 0.8rem; margin-bottom: 0.85rem; }
+  .rating-row {
+    display: grid;
+    grid-template-columns: minmax(145px, 1fr) auto;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #eeece6;
+  }
+  .rating-row:last-child { border-bottom: 0; }
+  .rating-label { font-size: 0.86rem; font-weight: 600; }
+  .rating-label span { display: block; color: var(--muted); font-size: 0.72rem; font-weight: 400; }
+  .star-group { display: flex; gap: 0.2rem; }
+  .star-button {
+    min-width: 38px;
+    padding: 0.35rem 0.4rem;
+    color: #706b60;
+    background: #f4f1e8;
+    border: 1px solid #ded8c9;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .star-button:hover,
+  .star-button.active { color: #704f00; background: #f5cc54; border-color: #d3a521; }
+  .trust-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 0.9rem 1rem;
+    border-radius: 9px;
+    color: white;
+    background: var(--primary);
+  }
+  .trust-preview strong { display: block; font-size: 1.45rem; }
+  .trust-preview span { font-size: 0.76rem; opacity: 0.88; }
+  .checkbox-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin: 0.65rem 0;
+    font-size: 0.82rem;
+  }
+  .checkbox-line input { width: auto; margin-top: 0.2rem; }
+  .review-status {
+    display: none;
+    margin-top: 0.85rem;
+    padding: 0.75rem;
+    border-radius: 7px;
+    font-size: 0.84rem;
+  }
+  .review-status.error { display: block; color: #92400e; background: #fef3c7; }
+  .review-status.success { display: block; color: #065f46; background: #d1fae5; }
+  body.modal-open { overflow: hidden; }
+  @media (max-width: 600px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .option-card.style-card img { height: 92px; }
+    .header-inner, .customer-review-callout { align-items: stretch; flex-direction: column; }
+    .review-launch { width: 100%; }
+    .review-modal { padding: 0; }
+    .review-dialog { min-height: 100%; border-radius: 0; }
+    .rating-row { grid-template-columns: 1fr; }
+    .star-button { flex: 1; min-height: 42px; }
+    .home-hero { grid-template-columns: 1fr; }
+    .home-hero-image { min-height: 210px; order: -1; }
+    .home-hero-copy { padding: 1.35rem; }
+    .inclusions-grid, .completed-homes-grid, .next-steps { grid-template-columns: 1fr; }
+    .completed-home img { height: 210px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container header-inner" style="padding:0;">
+    <div class="brand-lockup" aria-label="Fold Out Homes">
+      <div class="brand-mark" aria-hidden="true">FOH</div>
+      <div>
+        <h1>FOLD OUT HOMES</h1>
+        <p>Expandable homes configured for your needs</p>
+      </div>
+    </div>
+    <button class="review-launch" type="button" onclick="openReviewForm()">Leave a customer review</button>
+  </div>
+</header>
+
+<div class="container">
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <div class="hero-eyebrow">Fold Out Homes Australia</div>
+      <h2>Configure a home that fits your site and the way you live.</h2>
+      <p>Choose your size, floor plan, roof, finishes and fittings. Send the completed configuration to our team for a tailored home and delivery quote.</p>
+      <div class="hero-actions">
+        <button class="hero-primary" type="button" onclick="scrollToConfigurator()">Start configuring</button>
+        <button class="hero-secondary" type="button" onclick="openReviewForm()">Customer review</button>
+      </div>
+    </div>
+    <div class="home-hero-image">
+      <img src="style-best-seller.jpg" alt="Completed Fold Out Home with full-height glass entry" fetchpriority="high">
+    </div>
+  </section>
+
+  <section class="info-section" aria-labelledby="standardInclusionsTitle">
+    <h2 id="standardInclusionsTitle">Standard inclusions</h2>
+    <p>These core items are included as standard. Your selected finishes and exact specifications will be confirmed in the formal quote.</p>
+    <div class="inclusions-grid">
+      <div class="inclusion-card electrical-inclusion">
+        <strong>Upgraded electrical package, free</strong>
+        <span>Our upgraded electrical package is included as standard at no additional charge. Final fitting and outlet positions are confirmed before production.</span>
+      </div>
+      <div class="inclusion-card">
+        <strong>Bathroom with stone vanity top</strong>
+        <span>Standard bathroom fittings and a stone vanity benchtop are included across every model.</span>
+      </div>
+      <div class="inclusion-card">
+        <strong>Kitchen package</strong>
+        <span>Kitchen cabinetry, sink and your selected benchtop finish are included in the configured home specification.</span>
+      </div>
+      <div class="inclusion-card">
+        <strong>EPS wall insulation</strong>
+        <span>EPS is the standard wall insulation, with other insulation types available for quotation.</span>
+      </div>
+      <div class="inclusion-card">
+        <strong>Doors and windows</strong>
+        <span>Your selected door, window style and frame colours are recorded in the final configuration.</span>
+      </div>
+      <div class="inclusion-card">
+        <strong>Selected flooring</strong>
+        <span>Your chosen flooring type and colour are included in the configuration sent for quotation.</span>
+      </div>
+    </div>
+    <div class="not-included"><strong>Council approvals are not provided by Fold Out Homes.</strong> Delivery, foundations, site works and utility connections are only included when specifically listed in your formal quote.</div>
+  </section>
+
+  <section class="customer-review-callout" aria-label="Customer reviews">
+    <div>
+      <h2>Already own a Fold Out Home?</h2>
+      <p>Rate your experience. Every submission is checked against customer records before publication.</p>
+    </div>
+    <button class="btn-primary" type="button" onclick="openReviewForm()">Rate your experience</button>
+  </section>
+
+  <section class="info-section verified-reviews" id="verifiedReviewsSection" aria-labelledby="verifiedReviewsTitle">
+    <h2 id="verifiedReviewsTitle">Verified customer reviews</h2>
+    <div id="verifiedReviewsContent"></div>
+  </section>
+
+  <section class="info-section" aria-labelledby="completedHomesTitle">
+    <h2 id="completedHomesTitle">Real Fold Out Homes</h2>
+    <p>A closer look at completed homes and available exterior styles.</p>
+    <div class="completed-homes-grid">
+      <article class="completed-home">
+        <img src="style-best-seller.jpg" alt="Completed Fold Out Homes Pioneer model" loading="lazy">
+        <p>The Pioneer, our most popular full-glass entry configuration.</p>
+      </article>
+      <article class="completed-home">
+        <img src="roof-front-verandah-3m.jpeg" alt="Fold Out Home with covered three metre front verandah" loading="lazy">
+        <p>Pitched roof with a covered three-metre front verandah.</p>
+      </article>
+      <article class="completed-home">
+        <img src="style-modern-porch.jpg" alt="Modern porch style Fold Out Home" loading="lazy">
+        <p>Modern porch style with a covered outdoor living area.</p>
+      </article>
+    </div>
+  </section>
+
+
+  <div class="gallery-strip">
+    <h2>Real Fold Out Homes finishes</h2>
+    <div class="gallery-grid">
+      <img src="gallery-kitchen.jpg" alt="Kitchen and dining, real Fold Out Homes finish" loading="lazy">
+      <img src="gallery-living.jpg" alt="Living area, real Fold Out Homes finish" loading="lazy">
+      <img src="gallery-bedroom.jpg" alt="Bedroom, real Fold Out Homes finish" loading="lazy">
+      <img src="gallery-bathroom.jpg" alt="Bathroom, real Fold Out Homes finish" loading="lazy">
+    </div>
+    <p class="gallery-caption">Finish photography shown across our style range &mdash; exact inclusions confirmed at Step 5&ndash;8 below.</p>
+  </div>
+  <div class="progress-wrap" id="configuratorStart">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:9%"></div></div>
+    <div class="steps-label">
+      <span id="stepIndicator">Step 1 of 10</span>
+      <span id="stepName">Model Style</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: Model / Style -->
+  <div class="step-panel active" data-step="1">
+    <h2 class="step-title">1. Choose Your Model Style</h2>
+    <p class="step-desc"><strong>Click the style that best matches what you want.</strong> Our best seller, plus four more styles we build.</p>
+    <div class="option-grid">
+      <div class="option-card style-card best-seller-card" data-group="model" data-value="The Pioneer">
+        <img src="style-best-seller.jpg" alt="The Pioneer — our best-selling model, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <span class="best-seller-badge">Best Seller</span>
+          <h3>The Pioneer</h3>
+        <p>Our most popular model. Full-glass bifold entry, clean white finish, and a folding footprint that sets up fast on any site.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Modern Porch Style">
+        <img src="style-modern-porch.jpg" alt="Modern Porch Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Modern Porch Style</h3>
+        <p>Stylish contemporary design with spacious covered deck. Great for homes, offices or guest spaces.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Classic Porch Style">
+        <img src="style-classic-porch.jpg" alt="Classic Porch Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Classic Porch Style</h3>
+        <p>Timeless design with functional covered deck. Perfect for residential or rural properties.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Long House Style">
+        <img src="style-long-house.jpg" alt="Long House Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Long House Style</h3>
+        <p>Spacious and practical. Ideal for larger families, staff housing or multi-room layouts.</p>
+              </div>
+      </div>
+      <div class="option-card style-card" data-group="model" data-value="Ultimate Porch Style">
+        <img src="style-ultimate-porch.jpg" alt="Ultimate Porch Style — real Fold Out Homes photo" loading="lazy">
+        <div class="card-body">
+          <h3>Ultimate Porch Style</h3>
+        <p>Clean, modern and comfortable. Top choice for homes, offices and holiday getaways.</p>
+              </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <div></div>
+      <button class="btn-primary" onclick="nextStep()" id="next1" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Size -->
+  <div class="step-panel" data-step="2">
+    <h2 class="step-title">2. Choose Size</h2>
+    <p class="step-desc"><strong>Click a size</strong>, then press Next.</p>
+    <div class="option-grid" id="sizeOptions">
+      <div class="option-card" data-value="20ft">
+        <h3>20 ft</h3>
+        <p>Compact - Ideal for 1-2 bedrooms</p>
+      </div>
+      <div class="option-card" data-value="30ft">
+        <h3>30 ft</h3>
+        <p>Medium - Flexible living and sleeping</p>
+      </div>
+      <div class="option-card" data-value="40ft">
+        <h3>40 ft</h3>
+        <p>Spacious - Multi-bedroom layouts</p>
+      </div>
+      <div class="option-card" data-value="Custom">
+        <h3>Custom Size</h3>
+        <p>Tell us your preferred dimensions</p>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next2" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Layout -->
+  <div class="step-panel" data-step="3">
+    <h2 class="step-title">3. Floor Plan Layout</h2>
+    <p class="step-desc" id="layoutStepDesc">Tell us roughly what you need. Exact plans are confirmed with our team once we have your details.</p>
+    <div class="option-grid" id="layoutOptions" style="display:none;"></div>
+    <div class="form-group" id="layoutNotesWrap">
+      <label for="layoutNotes">Preferred layout / room count</label>
+      <textarea id="layoutNotes" placeholder="e.g. 2 bedrooms + open plan living and kitchen, or describe what matters most to you"></textarea>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next3" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Roof / Front Verandah -->
+  <div class="step-panel" data-step="4">
+    <h2 class="step-title">4. Roof and Front Verandah</h2>
+    <p class="step-desc">Choose a pitched roof to the house, with or without a covered front verandah.</p>
+    <div class="option-grid">
+      <div class="option-card style-card" data-group="roof" data-value="Pitched roof to house">
+        <img src="style-long-house.jpg" alt="Fold Out Home with pitched roof to the house" loading="lazy">
+        <div class="card-body">
+          <h3>Pitched Roof to House</h3>
+          <p>Pitched roof over the main house, without a front verandah.</p>
+        </div>
+      </div>
+      <div class="option-card style-card" data-group="roof" data-value="Pitched roof with 3m front verandah / terrace">
+        <img src="roof-front-verandah-3m.jpeg" alt="Fold Out Home with pitched roof and 3 metre front verandah terrace" loading="lazy">
+        <div class="card-body">
+          <h3>Front Verandah / Terrace</h3>
+          <p>Pitched roof with a covered verandah extending 3 metres from the front of the house.</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next4" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Kitchen -->
+  <div class="step-panel" data-step="5">
+    <h2 class="step-title">5. Kitchen</h2>
+    <p class="step-desc">Start with the basic package, then choose upgrades if you want them.</p>
+
+    <div class="section-label">Kitchen Layout</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="kitchenBase" data-value="Left corner kitchen">
+        <img src="kitchen-left-corner.jpg" alt="Left corner kitchen layout, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Left Corner</h3><p>L-shaped bench along the left wall into the corner.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="kitchenBase" data-value="U-shape kitchen">
+        <img src="kitchen-u-shape.jpg" alt="U-shape kitchen layout, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>U-Shape</h3><p>Bench wraps three walls for maximum counter and storage space.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="kitchenBase" data-value="Right corner kitchen">
+        <img src="kitchen-right-corner.jpg" alt="Right corner kitchen layout, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Right Corner</h3><p>L-shaped bench along the right wall into the corner.</p></div>
+      </div>
+    </div>
+
+    <div class="section-label">Cabinet Finish</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="kitchenFinish" data-value="Gloss White">
+        <div class="color-swatch" style="background:#fdfdfd; border:1px solid #ddd;"></div>
+        <h3>Gloss White</h3>
+      </div>
+      <div class="option-card" data-group="kitchenFinish" data-value="Matt White">
+        <div class="color-swatch" style="background:#f2f1ec; border:1px solid #ddd;"></div>
+        <h3>Matt White</h3>
+      </div>
+    </div>
+
+    <div class="section-label">Kitchen Upgrades (select any that apply)</div>
+    <div class="option-grid" id="kitchenUpgrades">
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="Hanging cabinet">
+        <h3>Hanging Cabinet</h3>
+        <p>Extra upper storage</p>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="UV board">
+        <h3>UV Board</h3>
+        <p>Premium UV wall panels in kitchen</p>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="Advanced washing sink">
+        <h3>Advanced Washing Sink</h3>
+        <p>Upgraded sink package</p>
+      </div>
+      <div class="option-card style-card multi" data-group="kitchenUpgrade" data-value="Induction cooktop">
+        <img src="kitchen-induction-cooktop.jpg" alt="Induction cooktop, 4-zone, real Fold Out Homes product photo" loading="lazy">
+        <div class="card-body"><h3>Induction Cooktop</h3><p>4-zone induction cooktop.</p></div>
+      </div>
+      <div class="option-card multi" data-group="kitchenUpgrade" data-value="None - keep basic only">
+        <h3>None</h3>
+        <p>Keep basic kitchen only</p>
+      </div>
+    </div>
+
+    <div class="section-label">UV Board Finish (if selected above)</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="White Marble, matte">
+        <img src="uv-white-marble-matte.jpg" alt="UV board finish, white marble matte, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>White Marble</h3><p>Matte finish, grey veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="White Marble, gloss">
+        <img src="uv-white-marble-gloss.jpg" alt="UV board finish, white marble gloss, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>White Marble</h3><p>Gloss finish, grey veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Warm White Marble">
+        <img src="uv-warm-white-marble.jpg" alt="UV board finish, warm white marble, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Warm White Marble</h3><p>White base with soft tan veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Tianshan White Jade">
+        <img src="uv-tianshan-white-jade.jpg" alt="UV board finish, Tianshan White Jade marble, real supplier photo" loading="lazy">
+        <div class="card-body"><h3>Tianshan White Jade</h3><p>White marble with fine tan veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Plain White">
+        <img src="uv-plain-white.jpg" alt="UV board finish, plain white, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Plain White</h3><p>Solid colour, no veining.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="uvBoardFinish" data-value="Golden Sand Marble">
+        <img src="uv-golden-sand-marble.jpg" alt="UV board finish, golden sand marble, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Golden Sand Marble</h3><p>Warm beige/tan tone marble look.</p></div>
+      </div>
+    </div>
+
+    <div class="section-label">Benchtop Material & Colour</div>
+    <div class="option-grid">
+      <div class="option-card style-card" data-group="benchtop" data-value="Stainless Steel">
+        <img src="kitchen-stainless-steel.jpg" alt="Full stainless steel benchtop kitchen, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Stainless Steel</h3><p>Full stainless steel benchtop and splashback, one continuous piece.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6926 - Beige Terrazzo">
+        <img src="bench-YL6926.jpg" alt="Stone benchtop YL-6926, beige terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6926</h3><p>Beige terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6937 - Light Grey Terrazzo">
+        <img src="bench-YL6937.jpg" alt="Stone benchtop YL-6937, light grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6937</h3><p>Light grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6947 - Grey Terrazzo">
+        <img src="bench-YL6947.jpg" alt="Stone benchtop YL-6947, grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6947</h3><p>Grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6905 - Warm White Terrazzo">
+        <img src="bench-YL6905.jpg" alt="Stone benchtop YL-6905, warm white terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6905</h3><p>Warm white terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6932 - Grey Stone">
+        <img src="bench-YL6932.jpg" alt="Stone benchtop YL-6932, mixed grey stone-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6932</h3><p>Mixed light/dark grey stone-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6908 - Beige/Grey Terrazzo">
+        <img src="bench-YL6908.jpg" alt="Stone benchtop YL-6908, beige-grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6908</h3><p>Beige-grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6902 - Warm Grey Terrazzo">
+        <img src="bench-YL6902.jpg" alt="Stone benchtop YL-6902, warm grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6902</h3><p>Warm grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6915 - White Terrazzo, fine speckle">
+        <img src="bench-YL6915.jpg" alt="Stone benchtop YL-6915, white fine-speckle terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6915</h3><p>White, fine speckle.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-6919 - White Terrazzo, coarse fleck">
+        <img src="bench-YL6919.jpg" alt="Stone benchtop YL-6919, white coarse-fleck terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6919</h3><p>White, coarse fleck.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="benchtop" data-value="YL-1001 - White Jade-effect">
+        <img src="bench-YL1001.jpg" alt="Stone benchtop YL-1001, white jade-effect quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-1001</h3><p>White jade-effect (larger white/grey chips).</p></div>
+      </div>
+    </div>
+    <p class="section-sub-note">Stone benchtops shown are quartz, 15mm. If your preferred code isn't shown, note it in comments and we'll confirm availability.</p>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next5" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: Bathroom -->
+  <div class="step-panel" data-step="6">
+    <h2 class="step-title">6. Bathroom</h2>
+    <p class="step-desc">The standard bathroom and stone vanity top are included across all models. Choose your layout, finish and any additional fittings.</p>
+
+    <div class="section-label">Basic Configuration (included)</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card selected" data-group="bathroomBase" data-value="Standard: Toilet + mirror + sink cabinet + shower + stone vanity top">
+        <h3>Standard Bathroom</h3>
+        <p>Toilet, mirror, sink cabinet, shower and stone vanity benchtop.</p>
+      </div>
+    </div>
+
+    <div class="section-label">Bathroom Size</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Standard bathroom">
+        <img src="bathroom-standard.jpg" alt="Standard bathroom, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Standard</h3><p>Glass shower, vanity and sink, toilet.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Upgraded bathroom, grey stone">
+        <img src="bathroom-upgraded-grey-stone.jpg" alt="Upgraded bathroom, grey stone finish, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Upgraded — Grey Stone</h3><p>650mm longer, larger basin, space for a washing machine under the sink.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Upgraded bathroom, white marble">
+        <img src="bathroom-upgraded-white-marble.jpg" alt="Upgraded bathroom, white marble finish, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Upgraded — White Marble</h3><p>650mm longer, larger basin, space for a washing machine under the sink.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomShape" data-value="Upgraded bathroom, dark charcoal">
+        <img src="bathroom-upgraded-dark-charcoal.jpg" alt="Upgraded bathroom, dark charcoal finish, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>Upgraded — Dark Charcoal</h3><p>650mm longer, larger basin, space for a washing machine under the sink.</p></div>
+      </div>
+    </div>
+
+    <div class="section-label">Bathroom Upgrades</div>
+    <div class="option-grid">
+      <div class="option-card style-card multi" data-group="bathroomUpgrade" data-value="Water heater">
+        <img src="water-heater.jpg" alt="Electric instant hot water system, real Fold Out Homes product photo" loading="lazy">
+        <div class="card-body"><h3>Water Heater</h3><p>Electric instant hot water system.</p></div>
+      </div>
+      <div class="option-card multi" data-group="bathroomUpgrade" data-value="UV board">
+        <h3>UV Board</h3>
+        <p>Premium UV wall panels</p>
+      </div>
+      <div class="option-card multi" data-group="bathroomUpgrade" data-value="None - keep basic only">
+        <h3>None</h3>
+        <p>Keep basic only</p>
+      </div>
+    </div>
+
+    <div class="section-label">Bathroom Stone Vanity Top Colour (standard inclusion)</div>
+    <p class="section-sub-note">A stone vanity benchtop is included across all models. Choose your preferred colour below.</p>
+    <div class="option-grid">
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6926 - Beige Terrazzo">
+        <img src="bench-YL6926.jpg" alt="Bathroom stone bench YL-6926, beige terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6926</h3><p>Beige terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6937 - Light Grey Terrazzo">
+        <img src="bench-YL6937.jpg" alt="Bathroom stone bench YL-6937, light grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6937</h3><p>Light grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6947 - Grey Terrazzo">
+        <img src="bench-YL6947.jpg" alt="Bathroom stone bench YL-6947, grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6947</h3><p>Grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6905 - Warm White Terrazzo">
+        <img src="bench-YL6905.jpg" alt="Bathroom stone bench YL-6905, warm white terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6905</h3><p>Warm white terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6932 - Grey Stone">
+        <img src="bench-YL6932.jpg" alt="Bathroom stone bench YL-6932, mixed grey stone-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6932</h3><p>Mixed light/dark grey stone-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6908 - Beige/Grey Terrazzo">
+        <img src="bench-YL6908.jpg" alt="Bathroom stone bench YL-6908, beige-grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6908</h3><p>Beige-grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6902 - Warm Grey Terrazzo">
+        <img src="bench-YL6902.jpg" alt="Bathroom stone bench YL-6902, warm grey terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6902</h3><p>Warm grey terrazzo-look quartz.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6915 - White Terrazzo, fine speckle">
+        <img src="bench-YL6915.jpg" alt="Bathroom stone bench YL-6915, white fine-speckle terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6915</h3><p>White, fine speckle.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-6919 - White Terrazzo, coarse fleck">
+        <img src="bench-YL6919.jpg" alt="Bathroom stone bench YL-6919, white coarse-fleck terrazzo-look quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-6919</h3><p>White, coarse fleck.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="bathroomBenchtop" data-value="YL-1001 - White Jade-effect">
+        <img src="bench-YL1001.jpg" alt="Bathroom stone bench YL-1001, white jade-effect quartz, real Fold Out Homes photo" loading="lazy">
+        <div class="card-body"><h3>YL-1001</h3><p>White jade-effect (larger white/grey chips).</p></div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next6" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 7: Exterior -->
+  <div class="step-panel" data-step="7">
+    <h2 class="step-title">7. Exterior Cladding</h2>
+    <p class="step-desc">Choose the wall type, then one of our featured finishes. Want something different? You can still request it below.</p>
+    <div class="section-label">Wallboard Type</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="wallType" data-value="Metal Carved Board">
+        <h3>Metal Carved Board</h3>
+        <p>Textured brick and timber looks</p>
+      </div>
+      <div class="option-card" data-group="wallType" data-value="Common Colour Steel">
+        <h3>Common Colour Steel</h3>
+        <p>Smooth, simple colour finish</p>
+      </div>
+    </div>
+    <div class="section-label">Featured Exterior Finishes</div>
+    <div class="option-grid exterior-grid" style="margin-bottom:1rem;">
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-005 - Classic White" data-code="D-005" data-name="Classic White">
+        <img src="cladding/D-005.jpg" alt="Classic White exterior cladding, supplier code D-005" loading="lazy">
+        <div class="card-body"><h3>Classic White</h3><p>Bright white finish, displayed against a darker background for visibility.</p><span class="supplier-code">D-005</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-011 - Brick Red" data-code="D-011" data-name="Brick Red">
+        <img src="cladding/D-011.jpg" alt="Brick Red exterior cladding, supplier code D-011" loading="lazy">
+        <div class="card-body"><h3>Brick Red</h3><p>Classic deeper brick tone</p><span class="supplier-code">D-011</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-051 - Pine Timber" data-code="D-051" data-name="Pine Timber">
+        <img src="cladding/D-051.jpg" alt="Pine Timber exterior cladding, supplier code D-051" loading="lazy">
+        <div class="card-body"><h3>Pine Timber</h3><p>Warm timber-look finish</p><span class="supplier-code">D-051</span></div>
+      </div>
+      <div class="option-card style-card exterior-choice" data-group="exteriorColour" data-value="D-052 - Dark Timber" data-code="D-052" data-name="Dark Timber">
+        <img src="cladding/D-052.jpg" alt="Dark Timber exterior cladding, supplier code D-052" loading="lazy">
+        <div class="card-body"><h3>Dark Timber</h3><p>Deeper contemporary timber look</p><span class="supplier-code">D-052</span></div>
+      </div>
+    </div>
+    <details class="custom-finish">
+      <summary>I'd like a different colour or finish</summary>
+      <div class="form-row" style="margin-top:.8rem;">
+        <div class="form-group"><label for="exteriorCode">Supplier code (if known)</label><input type="text" id="exteriorCode" placeholder="e.g. D-080"></div>
+        <div class="form-group"><label for="exteriorColourNote">Preferred colour / finish</label><input type="text" id="exteriorColourNote" placeholder="e.g. charcoal, stone look"></div>
+      </div>
+    </details>
+    <p class="section-sub-note">Supplier swatches are a visual guide. Final colour and texture should be confirmed from a physical sample before order.</p>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next7" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: Doors, Windows, Flooring -->
+  <div class="step-panel" data-step="8">
+    <h2 class="step-title">8. Doors, Windows and Flooring</h2>
+    <p class="step-desc">Select key fittings.</p>
+
+    <div class="section-label">Entrance Door</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="door" data-value="French door, white">
+        <img src="door-french-white.jpg" alt="French entrance door with glass sidelights, white finish" loading="lazy">
+        <div class="card-body"><h3>French Door</h3><p>Glass sidelights, white finish.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="door" data-value="French door, black">
+        <img src="door-french-black.jpg" alt="French entrance door with glass sidelights, black finish" loading="lazy">
+        <div class="card-body"><h3>French Door</h3><p>Glass sidelights, black finish.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="door" data-value="Sliding glass door">
+        <img src="door-sliding-black.jpg" alt="Sliding glass entrance door, aluminium frame" loading="lazy">
+        <div class="card-body"><h3>Sliding Glass Door</h3><p>Full-height glass, aluminium frame. Shown in black — also made in white.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="door" data-value="Solid panel door">
+        <img src="door-panel-charcoal.jpg" alt="Solid panel entrance door" loading="lazy">
+        <div class="card-body"><h3>Solid Panel Door</h3><p>No glass, for extra privacy and security. Shown in charcoal — also made in white or black.</p></div>
+      </div>
+    </div>
+    <div class="section-sub-note">Choosing the Sliding Glass Door or Solid Panel Door? Pick a frame colour:</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="doorColour" data-value="White">
+        <div class="color-swatch" style="background:#f5f5f5; border:1px solid #ddd;"></div>
+        <h3>White</h3>
+      </div>
+      <div class="option-card" data-group="doorColour" data-value="Black">
+        <div class="color-swatch" style="background:#1a1a1a;"></div>
+        <h3>Black</h3>
+      </div>
+    </div>
+
+    <div class="section-label">Windows</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="windows" data-value="Sliding window">
+        <img src="window-sliding-black.jpg" alt="Aluminium sliding window" loading="lazy">
+        <div class="card-body"><h3>Sliding Window</h3><p>Shown in black — also made in white.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="windows" data-value="Awning window">
+        <img src="window-awning-black.jpg" alt="Aluminium awning window" loading="lazy">
+        <div class="card-body"><h3>Awning Window</h3><p>Shown in black — also made in white.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="windows" data-value="Awning window, charcoal">
+        <img src="window-awning-charcoal.jpg" alt="Aluminium awning window, charcoal frame" loading="lazy">
+        <div class="card-body"><h3>Awning Window</h3><p>Charcoal aluminium frame.</p></div>
+      </div>
+      <div class="option-card style-card" data-group="windows" data-value="Glass curtain wall">
+        <img src="style-premium-glass.jpg" alt="Glass curtain wall window option on a Fold Out Home" loading="lazy">
+        <div class="card-body"><h3>Glass Curtain Wall</h3><p>Large glazed wall panels for more natural light and a modern frontage.</p></div>
+      </div>
+    </div>
+    <div class="section-sub-note">Frame colour for your windows:</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="windowColour" data-value="White">
+        <div class="color-swatch" style="background:#f5f5f5; border:1px solid #ddd;"></div>
+        <h3>White</h3>
+      </div>
+      <div class="option-card" data-group="windowColour" data-value="Black">
+        <div class="color-swatch" style="background:#1a1a1a;"></div>
+        <h3>Black</h3>
+      </div>
+      <div class="option-card" data-group="windowColour" data-value="Charcoal">
+        <div class="color-swatch" style="background:#4a4a4a;"></div>
+        <h3>Charcoal</h3>
+      </div>
+    </div>
+
+    <div class="section-label">Flooring</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card" data-group="flooring" data-value="Stone Plastic Composite (SPC) flooring">
+        <h3>Stone Plastic Composite (SPC)</h3>
+        <p>Durable, water-resistant rigid flooring with a realistic timber finish. Recommended for everyday living.</p>
+      </div>
+      <div class="option-card" data-group="flooring" data-value="PVC flooring">
+        <h3>PVC Flooring</h3>
+        <p>Easy-clean flexible vinyl flooring and our standard value option.</p>
+      </div>
+    </div>
+
+    <div class="section-label">Flooring Colour / Finish</div>
+    <div class="option-grid" style="margin-bottom:1.1rem;">
+      <div class="option-card style-card" data-group="flooringColour" data-value="White Pine (SWD20062202)">
+        <img src="floor-white-pine-SWD20062202.jpg" alt="Flooring finish, white pine wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>White Pine</h3><p>SWD20062202</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Wutong Wood (SWD20062031)">
+        <img src="floor-wutong-wood-SWD20062031.jpg" alt="Flooring finish, wutong wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Wutong Wood</h3><p>SWD20062031</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Maple (SWD20062027)">
+        <img src="floor-maple-SWD20062027.jpg" alt="Flooring finish, maple wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Maple</h3><p>SWD20062027</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Nanguo Wood (SWD20062030)">
+        <img src="floor-nanguo-wood-SWD20062030.jpg" alt="Flooring finish, nanguo wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Nanguo Wood</h3><p>SWD20062030</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Cedar (SWD20062032)">
+        <img src="floor-cedar-SWD20062032.jpg" alt="Flooring finish, cedar wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Cedar</h3><p>SWD20062032</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Light Chestnut (SWD20062033)">
+        <img src="floor-light-chestnut-SWD20062033.jpg" alt="Flooring finish, light chestnut wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Light Chestnut</h3><p>SWD20062033</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Palm Wood (SWD20062029)">
+        <img src="floor-palm-wood-SWD20062029.jpg" alt="Flooring finish, palm wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Palm Wood</h3><p>SWD20062029</p></div>
+      </div>
+      <div class="option-card style-card" data-group="flooringColour" data-value="Ash Grey (SWD20062028)">
+        <img src="floor-ash-grey-SWD20062028.jpg" alt="Flooring finish, ash grey wood grain, real supplier colour card" loading="lazy">
+        <div class="card-body"><h3>Ash Grey</h3><p>SWD20062028</p></div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next8" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 9: Extras -->
+  <div class="step-panel" data-step="9">
+    <h2 class="step-title">9. Quantity, Insulation and Timing</h2>
+    <p class="step-desc">Final details that help us quote accurately.</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="quantity">Number of units</label>
+        <select id="quantity">
+          <option value="1">1 unit</option>
+          <option value="2">2 units</option>
+          <option value="3">3 units</option>
+          <option value="4">4 units</option>
+          <option value="5+">5 or more</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="insulation">Wall Insulation</label>
+        <select id="insulation">
+          <option value="EPS">EPS (standard)</option>
+          <option value="Rock wool">Rock wool</option>
+          <option value="PU">PU (polyurethane)</option>
+          <option value="Not sure">Not sure yet</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="deliveryLocation">Delivery address *</label>
+      <input type="text" id="deliveryLocation" placeholder="Street address, suburb, state and postcode" autocomplete="street-address">
+      <p class="section-sub-note">Delivery cost depends on distance, access and site location anywhere in Australia. It will be confirmed in your formal quote.</p>
+    </div>
+
+    <div class="form-group">
+      <label for="timeline">Preferred timeline</label>
+      <select id="timeline">
+        <option value="ASAP">As soon as possible</option>
+        <option value="1-3 months">Within 1-3 months</option>
+        <option value="3-6 months">3-6 months</option>
+        <option value="Just researching">Just researching for now</option>
+      </select>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <button class="btn-primary" onclick="nextStep()" id="next9" disabled>Next -&gt;</button>
+    </div>
+  </div>
+
+  <!-- STEP 10: Contact + Submit -->
+  <div class="step-panel" data-step="10">
+    <h2 class="step-title">10. Your Details and Submit</h2>
+    <p class="step-desc">Review everything, then submit your request. You can also download a PDF or email our team directly.</p>
+
+    <div class="summary-box" id="summaryBox"></div>
+
+    <div class="reference-box">Configuration reference: <strong id="configurationReferenceDisplay"></strong></div>
+
+    <h3 class="section-label">What happens next</h3>
+    <div class="next-steps">
+      <div class="next-step"><div class="next-step-number">1</div><strong>We review your choices</strong><p>Our team checks your selected model, layout, inclusions and finishes.</p></div>
+      <div class="next-step"><div class="next-step-number">2</div><strong>We confirm delivery</strong><p>Delivery is calculated from the address you provide and added to your formal quote.</p></div>
+      <div class="next-step"><div class="next-step-number">3</div><strong>You receive a formal quote</strong><p>We confirm availability, specifications, delivery and the final price before you proceed.</p></div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="customerName">Full Name *</label>
+        <input type="text" id="customerName" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label for="customerPhone">Phone / WhatsApp</label>
+        <input type="tel" id="customerPhone" placeholder="0488 333 336 or your number">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="customerEmail">Email *</label>
+      <input type="email" id="customerEmail" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label for="customerNotes">Additional notes</label>
+      <textarea id="customerNotes" placeholder="Exact cladding codes, special requests, site access notes..."></textarea>
+    </div>
+
+    <div class="note">
+      This is a configuration request only. Fold Out Homes does not provide or arrange council approvals. Approval requirements, foundations, site works and utility connections are the buyer's responsibility unless specifically included in the formal quote.
+    </div>
+    <div class="error-note" id="submitError">
+      We couldn't send your request automatically. Please tap "Email to Team" below as a backup, or call/text 0488 333 336 — your configuration has been saved to PDF-ready format either way.
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-pdf" onclick="downloadPDF()">Download PDF Summary</button>
+      <button class="btn-email" onclick="emailTeam()">Email to Team</button>
+      <button class="btn-submit" onclick="submitQuote()" id="submitBtn">Submit Quote Request</button>
+    </div>
+
+    <div class="nav-buttons" style="margin-top:0.9rem;">
+      <button class="btn-secondary" onclick="prevStep()">&lt;- Back</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div class="step-panel" data-step="11" id="successPanel" style="display:none;">
+    <div style="text-align:center;padding:1.8rem 1rem;">
+      <div class="success-icon">&#10003;</div>
+      <h2 style="color:var(--success);margin-bottom:0.5rem;">Quote Request Sent</h2>
+      <p style="max-width:440px;margin:0 auto 1.3rem;color:var(--muted);font-size:0.92rem;">
+        Your configuration has been sent to our team. We'll be in touch with your formal quote. You can also download a PDF copy for your records.
+      </p>
+      <div class="reference-box" style="max-width:500px;margin:0 auto 1rem;">Configuration reference: <strong id="successReferenceDisplay"></strong></div>
+      <div class="summary-box" id="finalSummary" style="text-align:left;max-width:500px;margin:0 auto 1.3rem;"></div>
+      <div class="action-buttons" style="max-width:500px;margin:0 auto;">
+        <button class="btn-pdf" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn-email" onclick="emailTeam()">Email Team</button>
+        <button class="btn-primary" onclick="location.reload()">Start New Selection</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="review-modal" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle" aria-hidden="true">
+  <div class="review-dialog">
+    <div class="review-dialog-head">
+      <div>
+        <h2 id="reviewTitle">Share your Fold Out Homes experience</h2>
+        <p>Your contact and order details are used only to verify your review and will not be published.</p>
+      </div>
+      <button class="review-close" type="button" onclick="closeReviewForm()" aria-label="Close review form">&times;</button>
+    </div>
+
+    <form class="review-form" id="customerReviewForm">
+      <section class="review-section">
+        <h3>Verify your purchase</h3>
+        <p class="review-section-intro">These details help us confirm that the feedback comes from a real customer.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reviewName">Full name *</label>
+            <input type="text" id="reviewName" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label for="reviewEmail">Email used for your purchase *</label>
+            <input type="email" id="reviewEmail" autocomplete="email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reviewOrder">Order or invoice number</label>
+            <input type="text" id="reviewOrder" placeholder="Optional, if known">
+          </div>
+          <div class="form-group">
+            <label for="reviewStage">Where are you up to? *</label>
+            <select id="reviewStage" required>
+              <option value="">Select one</option>
+              <option>Order placed</option>
+              <option>Home delivered</option>
+              <option>Home installed</option>
+              <option>Living in the home for under 3 months</option>
+              <option>Living in the home for 3-12 months</option>
+              <option>Living in the home for more than 12 months</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reviewModel">Home model or style</label>
+            <input type="text" id="reviewModel" placeholder="e.g. The Pioneer">
+          </div>
+          <div class="form-group">
+            <label for="reviewSize">Home size</label>
+            <select id="reviewSize">
+              <option value="">Select if known</option>
+              <option>20 ft</option>
+              <option>30 ft</option>
+              <option>40 ft</option>
+              <option>Other / custom</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="review-section">
+        <h3>Rate your experience</h3>
+        <p class="review-section-intro">Choose 1 for very poor and 5 for excellent. Your score is calculated from the five areas below.</p>
+        <div id="ratingQuestions"></div>
+        <div class="trust-preview" aria-live="polite">
+          <div>
+            <strong id="trustScorePreview">Not calculated</strong>
+            <span>Your individual customer trust score</span>
+          </div>
+          <span>Quality and delivery carry the most weight.</span>
+        </div>
+        <div class="form-group">
+          <label for="reviewRecommend">How likely are you to recommend Fold Out Homes? *</label>
+          <select id="reviewRecommend" required>
+            <option value="">Select a score</option>
+            <option value="10">10 - Extremely likely</option>
+            <option value="9">9</option><option value="8">8</option><option value="7">7</option>
+            <option value="6">6</option><option value="5">5</option><option value="4">4</option>
+            <option value="3">3</option><option value="2">2</option><option value="1">1</option>
+            <option value="0">0 - Not at all likely</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="review-section">
+        <h3>Tell us more</h3>
+        <div class="form-group">
+          <label for="reviewBest">What did we do well? *</label>
+          <textarea id="reviewBest" required placeholder="Tell future customers what stood out for you."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="reviewImprove">What could we improve?</label>
+          <textarea id="reviewImprove" placeholder="Specific feedback helps us improve."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="reviewDisplayName">Name to display with your review *</label>
+          <input type="text" id="reviewDisplayName" required placeholder="e.g. Paul R. or Paul, Brisbane">
+        </div>
+        <label class="checkbox-line">
+          <input type="checkbox" id="reviewPublishConsent" required>
+          <span>I confirm this is my honest experience and give Fold Out Homes permission to publish my ratings and comments after verification. *</span>
+        </label>
+        <label class="checkbox-line">
+          <input type="checkbox" id="reviewPhotoContact">
+          <span>You may contact me about supplying customer photos or a short video testimonial.</span>
+        </label>
+      </section>
+
+      <button class="btn-submit" type="submit" id="reviewSubmitBtn">Submit review for verification</button>
+      <div class="review-status" id="reviewStatus" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</div>
+
+<div id="printArea">
+  <div class="print-header">
+    <h1>FOLD OUT HOMES - Quote Request</h1>
+    <div class="print-meta" id="printMeta"></div>
+  </div>
+  <table id="printTable"></table>
+  <div class="print-footer">
+    Generated from Fold Out Homes Custom Options Selector. This is a configuration request only. Call / Text 0488 333 336 for your formal quote.
+  </div>
+</div>
+
+<script>
+const selections = {
+  model: null,
+  size: null,
+  layout: null,
+  roof: null,
+  kitchenBase: null,
+  kitchenFinish: null,
+  kitchenUpgrades: [],
+  benchtop: null,
+  uvBoardFinish: null,
+  bathroomBase: "Standard: Toilet + mirror + sink cabinet + shower + stone vanity top",
+  bathroomShape: null,
+  bathroomUpgrades: [],
+  bathroomBenchtop: null,
+  wallType: null,
+  exteriorColour: null,
+  door: null,
+  doorColour: null,
+  windows: null,
+  windowColour: null,
+  flooring: null,
+  flooringColour: null
+};
+
+let currentStep = 1;
+const totalSteps = 10;
+
+// Real team inbox. Confirmed 17 Sep 2026 (see claude/brand-a-push.md).
+const TEAM_EMAIL = 'enquires@foldouthomes.com.au';
+
+// Lead capture endpoint. Uses FormSubmit.co (no account/signup required) so
+// every "Submit Quote Request" click actually reaches the team inbox instead
+// of silently vanishing. FIRST SUBMISSION ONLY: FormSubmit sends a one-time
+// confirmation email to TEAM_EMAIL that must be clicked to activate this
+// endpoint for future submissions. See claude/brand-a-push.md for details.
+const LEAD_ENDPOINT = 'https://formsubmit.co/ajax/' + TEAM_EMAIL;
+
+function createConfigurationReference() {
+  const now = new Date();
+  const date = now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, '0') +
+    String(now.getDate()).padStart(2, '0');
+  const code = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return 'FOH-' + date + '-' + code;
+}
+
+const configurationReference = createConfigurationReference();
+
+// Add verified reviews here after checking the customer record. The public
+// review section remains hidden until there are at least five verified reviews.
+const verifiedReviews = [];
+const MINIMUM_PUBLIC_REVIEWS = 5;
+
+function renderVerifiedReviews() {
+  if (verifiedReviews.length < MINIMUM_PUBLIC_REVIEWS) return;
+  const section = document.getElementById('verifiedReviewsSection');
+  const content = document.getElementById('verifiedReviewsContent');
+  const total = verifiedReviews.reduce(function(sum, review) { return sum + review.score; }, 0);
+  const average = (total / verifiedReviews.length).toFixed(1);
+  let html = '<div class="review-score-line"><strong>' + average + '/10</strong><span>from ' + verifiedReviews.length + ' verified customers</span></div>';
+  verifiedReviews.slice(0, 3).forEach(function(review) {
+    html += '<article class="public-review"><strong>' + review.displayName + '</strong><p>' + review.comment + '</p><span>' + review.model + ' &middot; Verified customer</span></article>';
+  });
+  content.innerHTML = html;
+  section.classList.add('visible');
+}
+
+const reviewRatings = {
+  quality: 0,
+  accuracy: 0,
+  communication: 0,
+  delivery: 0,
+  value: 0
+};
+
+const reviewQuestions = [
+  { key: 'quality', label: 'Product quality', help: 'Build, materials and finishes', weight: 0.30 },
+  { key: 'accuracy', label: 'Accuracy', help: 'How closely the home matched what was shown and agreed', weight: 0.15 },
+  { key: 'communication', label: 'Communication', help: 'Clarity, helpfulness and response times', weight: 0.15 },
+  { key: 'delivery', label: 'Delivery and setup', help: 'Timing, care and handover', weight: 0.25 },
+  { key: 'value', label: 'Value for money', help: 'Overall value compared with your expectations', weight: 0.15 }
+];
+
+function renderReviewQuestions() {
+  const wrap = document.getElementById('ratingQuestions');
+  if (!wrap || wrap.children.length) return;
+  reviewQuestions.forEach(function(question) {
+    const row = document.createElement('div');
+    row.className = 'rating-row';
+    let stars = '';
+    for (let score = 1; score <= 5; score++) {
+      stars += '<button class="star-button" type="button" data-rating="' + question.key + '" data-score="' + score + '" aria-label="' + question.label + ': ' + score + ' out of 5" aria-pressed="false">&#9733;</button>';
+    }
+    row.innerHTML = '<div class="rating-label">' + question.label + '<span>' + question.help + '</span></div>' +
+      '<div class="star-group" role="group" aria-label="' + question.label + '">' + stars + '</div>';
+    wrap.appendChild(row);
+  });
+}
+
+function updateReviewScore() {
+  const complete = reviewQuestions.every(function(question) { return reviewRatings[question.key] > 0; });
+  const preview = document.getElementById('trustScorePreview');
+  if (!complete) {
+    preview.textContent = 'Not calculated';
+    return null;
+  }
+  let weightedFive = 0;
+  reviewQuestions.forEach(function(question) {
+    weightedFive += reviewRatings[question.key] * question.weight;
+  });
+  const score = (weightedFive * 2).toFixed(1);
+  preview.textContent = score + ' / 10';
+  return score;
+}
+
+function openReviewForm() {
+  renderReviewQuestions();
+  const modal = document.getElementById('reviewModal');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  setTimeout(function() { document.getElementById('reviewName').focus(); }, 0);
+}
+
+function closeReviewForm() {
+  const modal = document.getElementById('reviewModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+}
+
+function scrollToConfigurator() {
+  document.getElementById('configuratorStart').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function getReviewPayload(score) {
+  return {
+    _subject: 'New verified customer review submission - ' + document.getElementById('reviewName').value.trim(),
+    customer_name_private: document.getElementById('reviewName').value.trim(),
+    customer_email_private: document.getElementById('reviewEmail').value.trim(),
+    order_or_invoice: document.getElementById('reviewOrder').value.trim() || 'Not supplied',
+    customer_stage: document.getElementById('reviewStage').value,
+    home_model: document.getElementById('reviewModel').value.trim() || 'Not supplied',
+    home_size: document.getElementById('reviewSize').value || 'Not supplied',
+    product_quality_1_to_5: reviewRatings.quality,
+    accuracy_1_to_5: reviewRatings.accuracy,
+    communication_1_to_5: reviewRatings.communication,
+    delivery_and_setup_1_to_5: reviewRatings.delivery,
+    value_for_money_1_to_5: reviewRatings.value,
+    weighted_trust_score_out_of_10: score,
+    recommendation_score_0_to_10: document.getElementById('reviewRecommend').value,
+    what_we_did_well: document.getElementById('reviewBest').value.trim(),
+    what_we_could_improve: document.getElementById('reviewImprove').value.trim() || 'No comment',
+    public_display_name: document.getElementById('reviewDisplayName').value.trim(),
+    permission_to_publish_after_verification: document.getElementById('reviewPublishConsent').checked ? 'Yes' : 'No',
+    permission_to_contact_for_photos_or_video: document.getElementById('reviewPhotoContact').checked ? 'Yes' : 'No',
+    submitted_at: new Date().toLocaleString(),
+    review_status: 'Pending verification',
+    _template: 'table'
+  };
+}
+
+// Real floor plans, by size. Only sizes with actual confirmed layouts go
+// here — anything else falls back to the free-text field below so we're
+// never showing a customer a "layout" that isn't real.
+const realLayouts = {
+  "20ft": [
+    { value: "2 Bedroom", img: "layout-20ft-2bed.jpg", desc: "Two bedrooms with built-in wardrobes, central bathroom, open-plan kitchen and living area." },
+    { value: "1 Bedroom", img: "layout-20ft-1bed.jpg", desc: "One bedroom, bathroom, open-plan kitchen and living area with a built-in desk nook." }
+  ],
+  "30ft": [
+    { value: "1 Bedroom", img: "layout-30ft-1bed.jpg", desc: "One bedroom with walk-in wardrobe, bathroom, and open-plan living and dining." },
+    { value: "2 Bedroom", img: "layout-30ft-2bed.jpg", desc: "Two bedrooms, bathroom, and open-plan living and dining." },
+    { value: "3 Bedroom", img: "layout-30ft-3bed.jpg", desc: "Three bedrooms, bathroom, and open-plan living and dining." }
+  ],
+  "40ft": [
+    { value: "2 Bedroom", img: "layout-40ft-2bed.jpg", desc: "Two bedrooms with walk-in wardrobe storage, plus open-plan living and dining." },
+    { value: "3 Bedroom", img: "layout-40ft-3bed.jpg", desc: "Three bedrooms, bathroom, kitchen and open-plan living and dining." }
+  ]
+};
+
+let lastLayoutMode = null;
+
+function populateLayoutStep() {
+  const grid = document.getElementById('layoutOptions');
+  const notesWrap = document.getElementById('layoutNotesWrap');
+  const desc = document.getElementById('layoutStepDesc');
+  const textarea = document.getElementById('layoutNotes');
+  const options = realLayouts[selections.size];
+  const mode = options ? ('cards:' + selections.size) : 'text';
+
+  if (mode !== lastLayoutMode) {
+    selections.layout = null;
+    document.getElementById('next3').disabled = true;
+    if (textarea) textarea.value = '';
+  }
+  lastLayoutMode = mode;
+
+  if (options) {
+    desc.textContent = 'Click the layout that fits you best.';
+    grid.style.display = '';
+    notesWrap.style.display = 'none';
+    grid.innerHTML = '';
+    options.forEach(function(item) {
+      const div = document.createElement('div');
+      div.className = 'option-card style-card';
+      div.dataset.group = 'layout';
+      div.dataset.value = item.value;
+      if (selections.layout === item.value) div.classList.add('selected');
+      div.innerHTML = '<img src="' + item.img + '" alt="' + item.value + ' floor plan, real Fold Out Homes layout" loading="lazy">' +
+        '<div class="card-body"><h3>' + item.value + '</h3><p>' + item.desc + '</p></div>';
+      grid.appendChild(div);
+    });
+  } else {
+    desc.textContent = 'Tell us roughly what you need. Exact plans are confirmed with our team once we have your details.';
+    grid.style.display = 'none';
+    notesWrap.style.display = '';
+    grid.innerHTML = '';
+  }
+}
+
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.id === 'layoutNotes') {
+    selections.layout = e.target.value.trim() || null;
+    document.getElementById('next3').disabled = !selections.layout;
+  }
+  if (e.target && (e.target.id === 'exteriorCode' || e.target.id === 'exteriorColourNote')) {
+    const code = document.getElementById('exteriorCode').value.trim();
+    const note = document.getElementById('exteriorColourNote').value.trim();
+    const parts = [];
+    if (code) parts.push('Code: ' + code);
+    if (note) parts.push(note);
+    selections.exteriorColour = parts.length ? parts.join(' — ') : null;
+    checkStepReady();
+  }
+  if (e.target && e.target.id === 'deliveryLocation') checkStepReady();
+});
+
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.option-card');
+  if (!card) return;
+
+  const group = card.dataset.group;
+  const value = card.dataset.value;
+  const parent = card.parentElement;
+  const isMulti = card.classList.contains('multi');
+
+  if (isMulti && group) {
+    if (value.indexOf('None') === 0) {
+      parent.querySelectorAll('.option-card').forEach(function(c) {
+        c.classList.remove('selected');
+      });
+      card.classList.add('selected');
+      selections[group === 'kitchenUpgrade' ? 'kitchenUpgrades' : 'bathroomUpgrades'] = [value];
+    } else {
+      parent.querySelectorAll('.option-card').forEach(function(c) {
+        if (c.dataset.value && c.dataset.value.indexOf('None') === 0) c.classList.remove('selected');
+      });
+      card.classList.toggle('selected');
+      const selected = [];
+      parent.querySelectorAll('.option-card.selected').forEach(function(c) {
+        selected.push(c.dataset.value);
+      });
+      if (group === 'kitchenUpgrade') selections.kitchenUpgrades = selected;
+      else if (group === 'bathroomUpgrade') selections.bathroomUpgrades = selected;
+    }
+  } else if (group) {
+    parent.querySelectorAll('[data-group="' + group + '"]').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    card.classList.add('selected');
+    selections[group] = value;
+    if (group === 'exteriorColour' && card.dataset.code) {
+      const codeInput = document.getElementById('exteriorCode');
+      const noteInput = document.getElementById('exteriorColourNote');
+      if (codeInput) codeInput.value = card.dataset.code;
+      if (noteInput) noteInput.value = card.dataset.name || '';
+    }
+  } else if (card.closest('#sizeOptions')) {
+    parent.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
+    card.classList.add('selected');
+    selections.size = value;
+    document.getElementById('next2').disabled = false;
+  }
+
+  checkStepReady();
+});
+
+function checkStepReady() {
+  if (currentStep === 1) document.getElementById('next1').disabled = !selections.model;
+  if (currentStep === 3) document.getElementById('next3').disabled = !selections.layout;
+  if (currentStep === 4) document.getElementById('next4').disabled = !selections.roof;
+  if (currentStep === 5) {
+    const uvRequired = selections.kitchenUpgrades.indexOf('UV board') !== -1;
+    document.getElementById('next5').disabled = !(selections.kitchenBase && selections.kitchenFinish && selections.benchtop && (!uvRequired || selections.uvBoardFinish));
+  }
+  if (currentStep === 6) document.getElementById('next6').disabled = !(selections.bathroomShape && selections.bathroomBenchtop);
+  if (currentStep === 7) document.getElementById('next7').disabled = !(selections.wallType && selections.exteriorColour);
+  if (currentStep === 8) {
+    const separateDoorColour = selections.door === 'Sliding glass door' || selections.door === 'Solid panel door';
+    document.getElementById('next8').disabled = !(selections.door && selections.windows && selections.windowColour && selections.flooring && selections.flooringColour && (!separateDoorColour || selections.doorColour));
+  }
+  if (currentStep === 9) document.getElementById('next9').disabled = !document.getElementById('deliveryLocation').value.trim();
+}
+
+function updateProgress() {
+  const pct = (currentStep / totalSteps) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepIndicator').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+  const names = ['', 'Model Style', 'Size', 'Floor Plan', 'Roof & Terrace', 'Kitchen', 'Bathroom', 'Exterior', 'Doors & Floors', 'Extras', 'Submit'];
+  document.getElementById('stepName').textContent = names[currentStep] || '';
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  const panel = document.querySelector('.step-panel[data-step="' + n + '"]');
+  if (panel) {
+    panel.style.display = 'block';
+    panel.classList.add('active');
+  }
+  currentStep = n;
+  updateProgress();
+  checkStepReady();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep() {
+  if (currentStep === 2) populateLayoutStep();
+  if (currentStep === 9) buildSummary();
+  if (currentStep < totalSteps) showStep(currentStep + 1);
+}
+
+function prevStep() {
+  if (currentStep > 1) showStep(currentStep - 1);
+}
+
+function getExtraValues() {
+  return {
+    quantity: document.getElementById('quantity') ? document.getElementById('quantity').value : '1',
+    insulation: document.getElementById('insulation') ? document.getElementById('insulation').value : '',
+    deliveryLocation: document.getElementById('deliveryLocation') ? document.getElementById('deliveryLocation').value.trim() : '',
+    timeline: document.getElementById('timeline') ? document.getElementById('timeline').value : ''
+  };
+}
+
+function getCustomerValues() {
+  return {
+    name: document.getElementById('customerName') ? document.getElementById('customerName').value.trim() : '',
+    email: document.getElementById('customerEmail') ? document.getElementById('customerEmail').value.trim() : '',
+    phone: document.getElementById('customerPhone') ? document.getElementById('customerPhone').value.trim() : '',
+    notes: document.getElementById('customerNotes') ? document.getElementById('customerNotes').value.trim() : ''
+  };
+}
+
+function buildSummary() {
+  const extras = getExtraValues();
+  const box = document.getElementById('summaryBox');
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+
+  const rows = [
+    ['Configuration Reference', configurationReference],
+    ['Model Style', selections.model],
+    ['Size', selections.size],
+    ['Layout', selections.layout],
+    ['Roof / Front Verandah', selections.roof],
+    ['Kitchen Layout', selections.kitchenBase],
+    ['Kitchen Finish', selections.kitchenFinish],
+    ['Kitchen Upgrades', kitchenUp],
+    ['UV Board Finish', selections.uvBoardFinish],
+    ['Benchtop', selections.benchtop],
+    ['Bathroom Base', selections.bathroomBase],
+    ['Bathroom Size', selections.bathroomShape],
+    ['Bathroom Upgrades', bathUp],
+    ['Bathroom Stone Vanity Top', selections.bathroomBenchtop || 'Standard stone, colour to be confirmed'],
+    ['Wall Type', selections.wallType],
+    ['Exterior Colour', selections.exteriorColour],
+    ['Door', selections.door],
+    ['Door Colour', selections.doorColour],
+    ['Windows', selections.windows],
+    ['Window Colour', selections.windowColour],
+    ['Flooring', selections.flooring],
+    ['Flooring Colour', selections.flooringColour],
+    ['Electrical', 'Upgraded electrical package, included free as standard'],
+    ['Quantity', extras.quantity],
+    ['Insulation', extras.insulation],
+    ['Timeline', extras.timeline]
+  ];
+  if (extras.deliveryLocation) rows.push(['Delivery Address', extras.deliveryLocation]);
+
+  let html = '<h3>Your Configuration Summary</h3>';
+  rows.forEach(function(r) {
+    html += '<div class="summary-row"><span class="summary-label">' + r[0] + '</span><span class="summary-value">' + (r[1] || '-') + '</span></div>';
+  });
+  box.innerHTML = html;
+}
+
+function buildPrintTable() {
+  const extras = getExtraValues();
+  const cust = getCustomerValues();
+  const now = new Date().toLocaleString();
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+
+  document.getElementById('printMeta').textContent =
+    'Reference: ' + configurationReference + '  |  Prepared: ' + now +
+    (cust.name ? '  |  Customer: ' + cust.name : '') +
+    (cust.email ? '  |  ' + cust.email : '');
+
+  const rows = [
+    ['Configuration Reference', configurationReference],
+    ['Model Style', selections.model],
+    ['Size', selections.size],
+    ['Layout', selections.layout],
+    ['Roof / Front Verandah', selections.roof],
+    ['Kitchen Layout', selections.kitchenBase],
+    ['Kitchen Finish', selections.kitchenFinish],
+    ['Kitchen Upgrades', kitchenUp],
+    ['UV Board Finish', selections.uvBoardFinish],
+    ['Benchtop Colour', selections.benchtop],
+    ['Bathroom Base', selections.bathroomBase],
+    ['Bathroom Size', selections.bathroomShape],
+    ['Bathroom Upgrades', bathUp],
+    ['Bathroom Stone Vanity Top', selections.bathroomBenchtop || 'Standard stone, colour to be confirmed'],
+    ['Wall Type', selections.wallType],
+    ['Exterior Colour', selections.exteriorColour],
+    ['Entrance Door', selections.door],
+    ['Door Colour', selections.doorColour],
+    ['Windows', selections.windows],
+    ['Window Colour', selections.windowColour],
+    ['Flooring', selections.flooring],
+    ['Flooring Colour', selections.flooringColour],
+    ['Electrical', 'Upgraded electrical package, included free as standard'],
+    ['Quantity', extras.quantity],
+    ['Insulation', extras.insulation],
+    ['Preferred Timeline', extras.timeline],
+    ['Delivery Address', extras.deliveryLocation || '-'],
+    ['Customer Name', cust.name || '-'],
+    ['Email', cust.email || '-'],
+    ['Phone', cust.phone || '-'],
+    ['Notes', cust.notes || '-']
+  ];
+
+  let html = '';
+  rows.forEach(function(r) {
+    html += '<tr><th>' + r[0] + '</th><td>' + (r[1] || '-') + '</td></tr>';
+  });
+  document.getElementById('printTable').innerHTML = html;
+}
+
+function downloadPDF() {
+  buildPrintTable();
+  window.print();
+}
+
+function buildLeadPayload(cust, extras) {
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+  return {
+    _subject: 'Fold Out Homes Quote Request ' + configurationReference + ' - ' + cust.name,
+    configuration_reference: configurationReference,
+    name: cust.name,
+    email: cust.email,
+    phone: cust.phone || 'N/A',
+    model_style: selections.model,
+    size: selections.size,
+    layout: selections.layout,
+    roof_terrace: selections.roof,
+    kitchen_base: selections.kitchenBase,
+    kitchen_finish: selections.kitchenFinish,
+    kitchen_upgrades: kitchenUp,
+    uv_board_finish: selections.uvBoardFinish || 'N/A',
+    benchtop: selections.benchtop,
+    bathroom_base: selections.bathroomBase,
+    bathroom_shape: selections.bathroomShape,
+    bathroom_upgrades: bathUp,
+    bathroom_benchtop_standard_inclusion: selections.bathroomBenchtop || 'Standard stone, colour to be confirmed',
+    wall_type: selections.wallType,
+    exterior_colour: selections.exteriorColour,
+    door: selections.door,
+    door_colour: selections.doorColour || 'Not specified',
+    windows: selections.windows,
+    window_colour: selections.windowColour || 'Not specified',
+    flooring: selections.flooring,
+    flooring_colour: selections.flooringColour || 'Not specified',
+    electrical_inclusion: 'Upgraded electrical package, included free as standard',
+    quantity: extras.quantity,
+    insulation: extras.insulation,
+    timeline: extras.timeline,
+    delivery_address: extras.deliveryLocation || 'Not specified',
+    notes: cust.notes || 'None',
+    submitted_at: new Date().toLocaleString(),
+    lead_source: 'Configurator-direct',
+    _template: 'table',
+    // Customer-facing confirmation email, sent automatically by FormSubmit to
+    // the address in cust.email. DRAFT COPY — per the project's standing rule
+    // ("sending real emails to prospects needs sign-off before it goes live"),
+    // Paul should read/edit this line before this file goes live. Edit the
+    // text below directly to change what customers receive.
+    _autoresponse: "Thanks for sending your Fold Out Homes configuration. Your reference is " + configurationReference + ". We will review your choices, calculate delivery to your address and contact you with a formal quote. Fold Out Homes does not provide or arrange council approvals. Approval requirements, foundations, site works and utility connections are the buyer's responsibility unless specifically included in the formal quote. Questions? Call or text 0488 333 336. - Fold Out Homes"
+  };
+}
+
+function emailTeam() {
+  const extras = getExtraValues();
+  const cust = getCustomerValues();
+  if (!cust.name || !cust.email) {
+    alert('Please enter your name and email first.');
+    return;
+  }
+
+  const kitchenUp = selections.kitchenUpgrades.length ? selections.kitchenUpgrades.join(', ') : 'None';
+  const bathUp = selections.bathroomUpgrades.length ? selections.bathroomUpgrades.join(', ') : 'None';
+
+  const subject = encodeURIComponent('Fold Out Homes Quote Request ' + configurationReference + ' - ' + cust.name);
+  const body = encodeURIComponent(
+`New quote request from Fold Out Homes Custom Options Selector
+
+CONFIGURATION REFERENCE
+${configurationReference}
+
+CUSTOMER
+Name: ${cust.name}
+Email: ${cust.email}
+Phone: ${cust.phone || 'N/A'}
+
+MODEL & SIZE
+Model Style: ${selections.model}
+Size: ${selections.size}
+Layout: ${selections.layout}
+Roof / Front Verandah: ${selections.roof}
+
+KITCHEN
+Layout: ${selections.kitchenBase}
+Finish: ${selections.kitchenFinish}
+Upgrades: ${kitchenUp}
+UV Board Finish: ${selections.uvBoardFinish}
+Benchtop: ${selections.benchtop}
+
+BATHROOM
+Base: ${selections.bathroomBase}
+Size: ${selections.bathroomShape}
+Upgrades: ${bathUp}
+Stone Vanity Top (standard inclusion): ${selections.bathroomBenchtop || 'Colour to be confirmed'}
+
+EXTERIOR & FITTINGS
+Wall Type: ${selections.wallType}
+Colour: ${selections.exteriorColour}
+Door: ${selections.door}
+Windows: ${selections.windows}
+Flooring: ${selections.flooring}
+Flooring Colour: ${selections.flooringColour}
+Electrical: Upgraded electrical package, included free as standard
+
+EXTRAS
+Quantity: ${extras.quantity}
+Insulation: ${extras.insulation}
+Timeline: ${extras.timeline}
+Delivery Address: ${extras.deliveryLocation || 'Not specified'}
+
+Notes:
+${cust.notes || 'None'}
+
+Submitted: ${new Date().toLocaleString()}
+`);
+
+  window.location.href = 'mailto:' + TEAM_EMAIL + '?subject=' + subject + '&body=' + body;
+}
+
+function showFinalSummary(cust, extras) {
+  document.getElementById('successReferenceDisplay').textContent = configurationReference;
+  const finalBox = document.getElementById('finalSummary');
+  finalBox.innerHTML =
+    '<h3>Submitted Configuration</h3>' +
+    '<div class="summary-row"><span class="summary-label">Reference</span><span class="summary-value">' + configurationReference + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Customer</span><span class="summary-value">' + cust.name + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Model</span><span class="summary-value">' + selections.model + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Size / Layout</span><span class="summary-value">' + selections.size + ' / ' + selections.layout + '</span></div>' +
+    '<div class="summary-row"><span class="summary-label">Quantity</span><span class="summary-value">' + extras.quantity + '</span></div>';
+}
+
+function submitQuote() {
+  const cust = getCustomerValues();
+  if (!cust.name || !cust.email) {
+    alert('Please enter your name and email so we can return the quote.');
+    return;
+  }
+
+  const extras = getExtraValues();
+  const errorNote = document.getElementById('submitError');
+  const btn = document.getElementById('submitBtn');
+  errorNote.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  fetch(LEAD_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(buildLeadPayload(cust, extras))
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('Lead endpoint returned ' + res.status);
+    document.querySelectorAll('.step-panel').forEach(function(p) { p.style.display = 'none'; });
+    const success = document.getElementById('successPanel');
+    success.style.display = 'block';
+    success.classList.add('active');
+    showFinalSummary(cust, extras);
+  })
+  .catch(function(err) {
+    console.error('Lead submit failed', err);
+    errorNote.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Quote Request';
+  });
+}
+
+function submitCustomerReview(event) {
+  event.preventDefault();
+  const form = document.getElementById('customerReviewForm');
+  const status = document.getElementById('reviewStatus');
+  const button = document.getElementById('reviewSubmitBtn');
+  const score = updateReviewScore();
+
+  status.className = 'review-status';
+  status.textContent = '';
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+  if (score === null) {
+    status.className = 'review-status error';
+    status.textContent = 'Please rate all five areas before submitting your review.';
+    document.getElementById('ratingQuestions').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Sending review...';
+
+  fetch(LEAD_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(getReviewPayload(score))
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('Review endpoint returned ' + res.status);
+    status.className = 'review-status success';
+    status.textContent = 'Thank you. Your review has been sent to our team for customer verification before publication.';
+    button.textContent = 'Review submitted';
+    form.querySelectorAll('input, select, textarea').forEach(function(field) { field.disabled = true; });
+    document.querySelectorAll('.star-button').forEach(function(star) { star.disabled = true; });
+  })
+  .catch(function(err) {
+    console.error('Review submit failed', err);
+    status.className = 'review-status error';
+    status.textContent = 'We could not send your review automatically. Please try again, or email it to ' + TEAM_EMAIL + '.';
+    button.disabled = false;
+    button.textContent = 'Submit review for verification';
+  });
+}
+
+document.addEventListener('click', function(event) {
+  const star = event.target.closest('.star-button');
+  if (star) {
+    const key = star.dataset.rating;
+    const score = Number(star.dataset.score);
+    reviewRatings[key] = score;
+    document.querySelectorAll('.star-button[data-rating="' + key + '"]').forEach(function(button) {
+      const active = Number(button.dataset.score) <= score;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    updateReviewScore();
+    return;
+  }
+
+  if (event.target.id === 'reviewModal') closeReviewForm();
+});
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape' && document.getElementById('reviewModal').classList.contains('open')) {
+    closeReviewForm();
+  }
+});
+
+document.getElementById('customerReviewForm').addEventListener('submit', submitCustomerReview);
+document.getElementById('configurationReferenceDisplay').textContent = configurationReference;
+document.getElementById('successReferenceDisplay').textContent = configurationReference;
+renderVerifiedReviews();
+
+updateProgress();
+</script>
+</body>
+</html>
