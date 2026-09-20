@@ -1730,7 +1730,12 @@ function closeReviewForm() {
 }
 
 function scrollToConfigurator() {
-  document.getElementById('configuratorStart').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const target = document.getElementById('configuratorStart');
+  const header = document.querySelector('header');
+  if (!target) return;
+  const headerOffset = header ? header.offsetHeight + 16 : 16;
+  const targetTop = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+  window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
 }
 
 function getReviewPayload(score) {
@@ -1924,7 +1929,7 @@ function showStep(n) {
   currentStep = n;
   updateProgress();
   checkStepReady();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.requestAnimationFrame(scrollToConfigurator);
 }
 
 function nextStep() {
