@@ -352,6 +352,35 @@
     background: #fafaf7;
   }
   .elevation-preview svg { width: 100%; height: auto; display: block; }
+  .selection-preview {
+    min-height: 170px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f4ef;
+  }
+  .selection-preview img {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+    background: #f5f4ef;
+  }
+  .selection-preview-swatch {
+    min-height: 170px;
+    display: grid;
+    place-items: end start;
+    padding: 1rem;
+    color: #fff;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,.7);
+  }
+  .selection-preview-label {
+    padding: .65rem .75rem;
+    background: #fff;
+    color: var(--text);
+    font-size: .78rem;
+    font-weight: 700;
+    border-top: 1px solid var(--border);
+  }
   .quote-only-note {
     margin: 0 0 1rem;
     padding: .72rem .85rem;
@@ -1705,6 +1734,7 @@ const selections = {
 };
 
 let currentStep = 1;
+let lastPreviewGroup = null;
 const totalSteps = 13;
 
 // Real team inbox. Confirmed 17 Sep 2026 (see claude/brand-a-push.md).
@@ -1905,7 +1935,8 @@ function buildConfiguratorFlow() {
   live.setAttribute('aria-label', 'Live 2D design preview');
   live.innerHTML = '<div class="live-design-head"><strong>Your 2D design</strong><span>Updates as you choose</span></div>' +
     '<div class="live-design-body"><div class="design-view"><div class="design-view-label"><span>Floor plan</span><span id="planCaption">Choose size and layout</span></div><div id="planPreview" class="design-empty">Your selected floor plan will appear here.</div></div>' +
-    '<div class="design-view"><div class="design-view-label"><span>Front elevation</span><span id="elevationCaption">Live preview</span></div><div id="elevationPreview" class="elevation-preview"></div></div></div>';
+    '<div class="design-view"><div class="design-view-label"><span>Front elevation</span><span id="elevationCaption">Live preview</span></div><div id="elevationPreview" class="elevation-preview"></div></div>' +
+    '<div class="design-view"><div class="design-view-label"><span>Current selection</span><span id="selectionCaption">Choose an option</span></div><div id="selectionPreview" class="selection-preview"><div class="design-empty">Kitchen, bathroom and finish choices will appear here.</div></div></div></div>';
   progress.parentNode.insertBefore(workspace, progress.nextSibling);
   workspace.appendChild(panels);
   workspace.appendChild(live);
@@ -1946,6 +1977,52 @@ function updateLiveDesign() {
     '<rect x="258" y="139" width="38" height="58" fill="#bcd5df" stroke="' + frame + '" stroke-width="7"/>' + terraceSvg +
     '<line x1="28" y1="242" x2="394" y2="242" stroke="#756e60" stroke-width="3"/></svg>';
   document.getElementById('elevationCaption').textContent = [selections.frameColor, selections.exteriorColour].filter(Boolean).join(' / ') || 'Live preview';
+
+  const groupsByStep = {
+    1: ['model'],
+    3: ['layout'],
+    4: ['roof'],
+    5: ['frameColor'],
+    6: ['exteriorColour', 'wallType'],
+    7: ['kitchenBase', 'kitchenFinish', 'kitchenUpgrade'],
+    8: ['benchtop'],
+    9: ['bathroomShape', 'bathroomBenchtop', 'bathroomUpgrade'],
+    10: ['flooringColour', 'flooring'],
+    11: ['bathroomUvBoard'],
+    12: ['door', 'windows', 'doorColour', 'windowColour']
+  };
+  const stepGroups = groupsByStep[currentStep] || ['model'];
+  const activeGroup = lastPreviewGroup && stepGroups.indexOf(lastPreviewGroup) !== -1 ? lastPreviewGroup : stepGroups[0];
+  let selectedCard = document.querySelector('[data-group="' + activeGroup + '"].selected');
+  if (!selectedCard) {
+    for (let i = 0; i < stepGroups.length; i++) {
+      selectedCard = document.querySelector('[data-group="' + stepGroups[i] + '"].selected');
+      if (selectedCard) break;
+    }
+  }
+
+  const selectionPreview = document.getElementById('selectionPreview');
+  const selectionCaption = document.getElementById('selectionCaption');
+  if (!selectionPreview || !selectionCaption) return;
+  if (!selectedCard) {
+    selectionCaption.textContent = 'Choose an option';
+    selectionPreview.innerHTML = '<div class="design-empty">Your selection for this step will appear here.</div>';
+    return;
+  }
+
+  const selectedName = selectedCard.dataset.value || selectedCard.querySelector('h3')?.textContent || 'Selected option';
+  const selectedImage = selectedCard.querySelector('img');
+  const selectedSwatch = selectedCard.querySelector('.color-swatch');
+  selectionCaption.textContent = selectedName;
+  if (selectedImage) {
+    selectionPreview.innerHTML = '<img src="' + selectedImage.getAttribute('src') + '" alt="' + selectedName.replace(/"/g, '&quot;') + '">' +
+      '<div class="selection-preview-label">' + selectedName + '</div>';
+  } else if (selectedSwatch) {
+    const swatchColour = selectedSwatch.style.background || getComputedStyle(selectedSwatch).backgroundColor;
+    selectionPreview.innerHTML = '<div class="selection-preview-swatch" style="background:' + swatchColour + '"><span>' + selectedName + '</span></div>';
+  } else {
+    selectionPreview.innerHTML = '<div class="selection-preview-swatch" style="background:linear-gradient(145deg,#18325f,#061d4f)"><span>' + selectedName + '</span></div>';
+  }
 }
 
 function createConfigurationReference() {
@@ -2164,6 +2241,8 @@ document.addEventListener('click', function(e) {
   const parent = card.parentElement;
   const isMulti = card.classList.contains('multi');
 
+  if (group) lastPreviewGroup = group;
+
   if (isMulti && group) {
     if (value.indexOf('None') === 0) {
       parent.querySelectorAll('.option-card').forEach(function(c) {
@@ -2244,6 +2323,7 @@ function showStep(n) {
   currentStep = n;
   updateProgress();
   checkStepReady();
+  updateLiveDesign();
   window.requestAnimationFrame(scrollToConfigurator);
 }
 
