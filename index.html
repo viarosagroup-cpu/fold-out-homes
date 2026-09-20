@@ -296,6 +296,73 @@
     padding: 0.15rem 0.45rem;
     border-radius: 4px;
   }
+  .configurator-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 1rem;
+    align-items: start;
+  }
+  .configurator-panels { min-width: 0; }
+  .live-design {
+    position: sticky;
+    top: 88px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.05);
+    overflow: hidden;
+  }
+  .live-design-head {
+    padding: .9rem 1rem;
+    background: var(--primary);
+    color: #fff;
+  }
+  .live-design-head strong { display: block; font-size: .92rem; }
+  .live-design-head span { font-size: .73rem; opacity: .82; }
+  .design-view { padding: .85rem; border-bottom: 1px solid var(--border); }
+  .design-view:last-child { border-bottom: 0; }
+  .design-view-label {
+    display: flex;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-bottom: .5rem;
+    color: var(--muted);
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .design-view img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f5f4ef;
+  }
+  .design-empty {
+    aspect-ratio: 16 / 10;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: .78rem;
+    border: 1px dashed #c9c5b9;
+    border-radius: 8px;
+    background: #fafaf7;
+  }
+  .elevation-preview svg { width: 100%; height: auto; display: block; }
+  .quote-only-note {
+    margin: 0 0 1rem;
+    padding: .72rem .85rem;
+    border-left: 4px solid var(--accent);
+    border-radius: 7px;
+    background: #fff8f1;
+    color: #5d4634;
+    font-size: .82rem;
+  }
+  .compact-options .option-card { padding: .78rem; }
+  .compact-options .option-card h3 { font-size: .84rem; }
   .color-swatch {
     width: 100%;
     height: 38px;
@@ -459,6 +526,19 @@
     .container { padding: 0.8rem; }
     .step-panel { padding: 1.05rem; }
     .action-buttons button { min-width: 100%; }
+  }
+  @media (max-width: 980px) {
+    .configurator-workspace { grid-template-columns: 1fr; }
+    .live-design { position: static; order: -1; }
+    .live-design-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .design-view { border-bottom: 0; }
+    .design-view + .design-view { border-left: 1px solid var(--border); }
+  }
+  @media (max-width: 600px) {
+    .live-design-body { grid-template-columns: 1fr; }
+    .design-view + .design-view { border-left: 0; border-top: 1px solid var(--border); }
+    .configurator-panels { order: -1; }
+    .live-design { order: 0; }
   }
 
   .option-card.style-card { padding: 0; overflow: hidden; }
@@ -815,7 +895,7 @@
   <div class="progress-wrap" id="configuratorStart">
     <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:9%"></div></div>
     <div class="steps-label">
-      <span id="stepIndicator">Step 1 of 10</span>
+      <span id="stepIndicator">Step 1 of 13</span>
       <span id="stepName">Model Style</span>
     </div>
   </div>
@@ -1603,6 +1683,7 @@ const selections = {
   size: null,
   layout: null,
   roof: null,
+  frameColor: null,
   kitchenBase: null,
   kitchenFinish: null,
   kitchenUpgrades: [],
@@ -1612,6 +1693,7 @@ const selections = {
   bathroomShape: null,
   bathroomUpgrades: [],
   bathroomBenchtop: null,
+  bathroomUvBoard: null,
   wallType: null,
   exteriorColour: null,
   door: null,
@@ -1623,7 +1705,7 @@ const selections = {
 };
 
 let currentStep = 1;
-const totalSteps = 10;
+const totalSteps = 13;
 
 // Real team inbox. Confirmed 17 Sep 2026 (see claude/brand-a-push.md).
 const TEAM_EMAIL = 'sales@foldouthomes.com.au';
@@ -1631,6 +1713,240 @@ const TEAM_EMAIL = 'sales@foldouthomes.com.au';
 // Lead capture endpoint. The sales inbox must approve FormSubmit's one-time
 // activation email before automatic quote and review submissions are forwarded.
 const LEAD_ENDPOINT = 'https://formsubmit.co/ajax/' + TEAM_EMAIL;
+
+function createStepPanel(step, title, description) {
+  const panel = document.createElement('div');
+  panel.className = 'step-panel';
+  panel.dataset.step = String(step);
+  panel.innerHTML = '<h2 class="step-title">' + step + '. ' + title + '</h2>' +
+    '<p class="step-desc">' + description + '</p>';
+  return panel;
+}
+
+function setPanelNav(panel, step, finalStep) {
+  let nav = panel.querySelector(':scope > .nav-buttons');
+  if (!nav) {
+    nav = document.createElement('div');
+    nav.className = 'nav-buttons';
+    panel.appendChild(nav);
+  }
+  if (finalStep) {
+    nav.innerHTML = '<button class="btn-secondary" type="button" onclick="prevStep()">&lt;- Back</button><div></div>';
+    return;
+  }
+  nav.innerHTML = (step === 1 ? '<div></div>' : '<button class="btn-secondary" type="button" onclick="prevStep()">&lt;- Back</button>') +
+    '<button class="btn-primary" type="button" onclick="nextStep()" id="next' + step + '" disabled>Next -&gt;</button>';
+}
+
+function moveSection(source, target, labelText) {
+  const children = Array.from(source.children);
+  const start = children.findIndex(function(node) {
+    return node.classList && node.classList.contains('section-label') && node.textContent.trim() === labelText;
+  });
+  if (start < 0) return;
+  for (let i = start; i < children.length; i++) {
+    const node = children[i];
+    if (i > start && node.classList && (node.classList.contains('section-label') || node.classList.contains('nav-buttons'))) break;
+    target.appendChild(node);
+  }
+}
+
+function buildFrameOptions(panel) {
+  const colours = [
+    ['Black', '#111111'], ['White', '#f7f7f4'], ['RAL 8024 Beige Brown', '#79553d'],
+    ['RAL 8023 Orange Brown', '#a85d32'], ['RAL 1011 Brown Beige', '#80643f'],
+    ['RAL 9007 Grey Aluminium', '#8f8f86'], ['RAL 1015 Light Ivory', '#e6d9b5'],
+    ['RAL 3016 Coral Red', '#9d3d3a'], ['RAL 3009 Oxide Red', '#6d342d'],
+    ['RAL 4010 Telemagenta', '#bd3c71'], ['RAL 2012 Salmon Orange', '#c45d4b'],
+    ['RAL 2000 Yellow Orange', '#d17f21'], ['RAL 5017 Traffic Blue', '#15559a'],
+    ['RAL 5009 Azure Blue', '#245878'], ['RAL 5024 Pastel Blue', '#6a8eae'],
+    ['RAL 4005 Blue Lilac', '#7773a8'], ['RAL 6026 Opal Green', '#0b6b53'],
+    ['RAL 6032 Signal Green', '#268c4d']
+  ];
+  const grid = document.createElement('div');
+  grid.className = 'option-grid compact-options';
+  colours.forEach(function(item) {
+    const card = document.createElement('div');
+    card.className = 'option-card';
+    card.dataset.group = 'frameColor';
+    card.dataset.value = item[0];
+    card.dataset.hex = item[1];
+    card.innerHTML = '<div class="color-swatch" style="background:' + item[1] + '"></div><h3>' + item[0] + '</h3>';
+    grid.appendChild(card);
+  });
+  panel.appendChild(grid);
+}
+
+function expandExteriorFinishes(panel) {
+  const grid = panel.querySelector('.exterior-grid');
+  if (!grid) return;
+  const codes = ['D-001','D-002','D-003','D-004','D-005','D-006','D-007','D-008','D-009','D-010','D-011','D-012','D-047','D-048','D-049','D-050','D-051','D-052','D-053','D-055','D-056','D-057','D-058','D-059','D-060','D-061'];
+  const known = {'D-005':'Classic White','D-011':'Brick Red','D-051':'Pine Timber','D-052':'Dark Timber'};
+  grid.innerHTML = '';
+  codes.forEach(function(code) {
+    const name = known[code] || 'Supplier Finish ' + code;
+    const card = document.createElement('div');
+    card.className = 'option-card style-card exterior-choice';
+    card.dataset.group = 'exteriorColour';
+    card.dataset.value = code + ' - ' + name;
+    card.dataset.code = code;
+    card.dataset.name = name;
+    card.innerHTML = '<img src="cladding/' + code + '.jpg" alt="Exterior cladding supplier finish ' + code + '" loading="lazy">' +
+      '<div class="card-body"><h3>' + name + '</h3><span class="supplier-code">' + code + '</span></div>';
+    grid.appendChild(card);
+  });
+}
+
+function buildConfiguratorFlow() {
+  const original = {};
+  for (let i = 1; i <= 10; i++) original[i] = document.querySelector('.step-panel[data-step="' + i + '"]');
+  const success = document.getElementById('successPanel');
+
+  original[1].dataset.step = '1';
+  original[2].dataset.step = '2';
+  original[3].dataset.step = '3';
+  original[4].dataset.step = '4';
+  original[7].dataset.step = '6';
+  original[5].dataset.step = '7';
+  original[6].dataset.step = '9';
+  original[8].dataset.step = '12';
+  original[10].dataset.step = '13';
+  if (success) success.dataset.step = '14';
+
+  const framePanel = createStepPanel(5, 'Frame Colour', 'Choose the colour for the structural frame. Black and white are the common choices.');
+  buildFrameOptions(framePanel);
+  original[7].parentNode.insertBefore(framePanel, original[7]);
+
+  const benchtopPanel = createStepPanel(8, 'Kitchen Benchtop', 'Choose your preferred kitchen benchtop finish. Availability is confirmed in your personalised quote.');
+  moveSection(original[5], benchtopPanel, 'Benchtop Material & Colour');
+  original[6].parentNode.insertBefore(benchtopPanel, original[6]);
+
+  const flooringPanel = createStepPanel(10, 'Flooring', 'Choose the flooring type and timber-look finish for your home.');
+  moveSection(original[8], flooringPanel, 'Flooring');
+  moveSection(original[8], flooringPanel, 'Flooring Colour / Finish');
+  original[8].parentNode.insertBefore(flooringPanel, original[8]);
+
+  const uvPanel = createStepPanel(11, 'Bathroom Wall Finish', 'Choose the waterproof bathroom wall finish. Final colour is confirmed against the supplier sample.');
+  const standard = document.createElement('div');
+  standard.className = 'option-card';
+  standard.dataset.group = 'bathroomUvBoard';
+  standard.dataset.value = 'Standard waterproof board';
+  standard.innerHTML = '<h3>Standard Waterproof Board</h3><p>Clean white standard bathroom wall finish.</p>';
+  const uvGrid = document.createElement('div');
+  uvGrid.className = 'option-grid';
+  uvGrid.appendChild(standard);
+  uvPanel.appendChild(uvGrid);
+  moveSection(original[5], uvPanel, 'UV Board Finish (if selected above)');
+  const movedUvGrid = uvPanel.querySelectorAll('.option-grid')[1];
+  if (movedUvGrid) {
+    Array.from(movedUvGrid.children).forEach(function(card) {
+      card.dataset.group = 'bathroomUvBoard';
+    });
+    while (movedUvGrid.firstChild) uvGrid.appendChild(movedUvGrid.firstChild);
+    movedUvGrid.remove();
+  }
+  const movedUvLabel = Array.from(uvPanel.querySelectorAll('.section-label')).find(function(label) {
+    return label.textContent.indexOf('UV Board Finish') !== -1;
+  });
+  if (movedUvLabel) movedUvLabel.remove();
+  original[8].parentNode.insertBefore(uvPanel, original[8]);
+
+  const kitchenUvUpgrade = original[5].querySelector('[data-group="kitchenUpgrade"][data-value="UV board"]');
+  if (kitchenUvUpgrade) kitchenUvUpgrade.remove();
+
+  const extras = original[9];
+  const contact = original[10];
+  const summary = contact.querySelector('#summaryBox');
+  Array.from(extras.children).forEach(function(node) {
+    if (!node.classList.contains('step-title') && !node.classList.contains('step-desc') && !node.classList.contains('nav-buttons')) {
+      contact.insertBefore(node, summary);
+    }
+  });
+  extras.remove();
+
+  const headings = {
+    1:['Choose Your Model Style','Choose the overall exterior style that best matches the home you want.'],
+    2:['Choose Size','Choose a 20 ft, 30 ft, 40 ft or custom-size home.'],
+    3:['Floor Plan Layout','Choose a confirmed plan for your selected size.'],
+    4:['Roof and Front Verandah','Choose a pitched roof to the house, with or without the 3 metre front verandah.'],
+    6:['Exterior Facade','Choose the wall construction and exterior finish.'],
+    7:['Kitchen Layout','Choose the kitchen layout, cabinet finish and any kitchen fittings.'],
+    9:['Bathroom','Choose the bathroom configuration, vanity top and fittings.'],
+    12:['Doors and Windows','Choose the entrance door, windows and frame colours.'],
+    13:['Your Details and Quote Request','Review your design, add delivery details, then submit it for a personalised quote.']
+  };
+  Object.keys(headings).forEach(function(step) {
+    const panel = document.querySelector('.step-panel[data-step="' + step + '"]');
+    if (!panel) return;
+    panel.querySelector('.step-title').textContent = step + '. ' + headings[step][0];
+    panel.querySelector('.step-desc').textContent = headings[step][1];
+  });
+
+  expandExteriorFinishes(original[7]);
+  const contactDesc = contact.querySelector('.step-desc');
+  const quoteNote = document.createElement('div');
+  quoteNote.className = 'quote-only-note';
+  quoteNote.textContent = 'No prices are shown online. Submit your completed design and we will prepare a personalised home and delivery quote.';
+  contact.insertBefore(quoteNote, contactDesc.nextSibling);
+
+  for (let step = 1; step <= 12; step++) {
+    const panel = document.querySelector('.step-panel[data-step="' + step + '"]');
+    if (panel) setPanelNav(panel, step, false);
+  }
+  setPanelNav(contact, 13, true);
+
+  const progress = document.getElementById('configuratorStart');
+  const workspace = document.createElement('div');
+  workspace.className = 'configurator-workspace';
+  const panels = document.createElement('div');
+  panels.className = 'configurator-panels';
+  const live = document.createElement('aside');
+  live.className = 'live-design';
+  live.setAttribute('aria-label', 'Live 2D design preview');
+  live.innerHTML = '<div class="live-design-head"><strong>Your 2D design</strong><span>Updates as you choose</span></div>' +
+    '<div class="live-design-body"><div class="design-view"><div class="design-view-label"><span>Floor plan</span><span id="planCaption">Choose size and layout</span></div><div id="planPreview" class="design-empty">Your selected floor plan will appear here.</div></div>' +
+    '<div class="design-view"><div class="design-view-label"><span>Front elevation</span><span id="elevationCaption">Live preview</span></div><div id="elevationPreview" class="elevation-preview"></div></div></div>';
+  progress.parentNode.insertBefore(workspace, progress.nextSibling);
+  workspace.appendChild(panels);
+  workspace.appendChild(live);
+  for (let step = 1; step <= 13; step++) {
+    const panel = document.querySelector('.step-panel[data-step="' + step + '"]');
+    if (panel) panels.appendChild(panel);
+  }
+}
+
+function updateLiveDesign() {
+  const plan = document.getElementById('planPreview');
+  const planCaption = document.getElementById('planCaption');
+  if (!plan) return;
+  const selectedLayout = document.querySelector('[data-group="layout"].selected img');
+  if (selectedLayout) {
+    plan.className = '';
+    plan.innerHTML = '<img src="' + selectedLayout.getAttribute('src') + '" alt="Selected Fold Out Homes floor plan">';
+    planCaption.textContent = (selections.size || '') + ' ' + (selections.layout || '');
+  } else {
+    plan.className = 'design-empty';
+    plan.textContent = 'Your selected floor plan will appear here.';
+    planCaption.textContent = selections.size ? selections.size + ' selected' : 'Choose size and layout';
+  }
+
+  const frameCard = document.querySelector('[data-group="frameColor"].selected');
+  const exteriorCard = document.querySelector('[data-group="exteriorColour"].selected img');
+  const frame = frameCard ? frameCard.dataset.hex : '#1b1b1b';
+  const cladding = exteriorCard ? exteriorCard.getAttribute('src') : '';
+  const terrace = selections.roof && selections.roof.indexOf('verandah') !== -1;
+  const pattern = cladding ? '<defs><pattern id="claddingPattern" patternUnits="objectBoundingBox" width="1" height="1"><image href="' + cladding + '" width="360" height="150" preserveAspectRatio="xMidYMid slice"/></pattern></defs>' : '';
+  const wallFill = cladding ? 'url(#claddingPattern)' : '#ece8dc';
+  const terraceSvg = terrace ? '<path d="M292 92 L382 118 L382 126 L292 103 Z" fill="#222"/><line x1="370" y1="121" x2="370" y2="236" stroke="' + frame + '" stroke-width="7"/><rect x="292" y="234" width="90" height="8" fill="#8c6748"/>' : '';
+  document.getElementById('elevationPreview').innerHTML = '<svg viewBox="0 0 420 270" role="img" aria-label="Schematic front elevation of selected home">' + pattern +
+    '<rect width="420" height="270" fill="#f5f4ef"/><path d="M38 104 L210 34 L327 104 Z" fill="#252525"/>' +
+    '<rect x="48" y="104" width="272" height="132" rx="2" fill="' + wallFill + '" stroke="' + frame + '" stroke-width="7"/>' +
+    '<rect x="79" y="139" width="58" height="58" fill="#bcd5df" stroke="' + frame + '" stroke-width="7"/>' +
+    '<rect x="165" y="130" width="67" height="106" fill="#c7dce4" stroke="' + frame + '" stroke-width="7"/>' +
+    '<rect x="258" y="139" width="38" height="58" fill="#bcd5df" stroke="' + frame + '" stroke-width="7"/>' + terraceSvg +
+    '<line x1="28" y1="242" x2="394" y2="242" stroke="#756e60" stroke-width="3"/></svg>';
+  document.getElementById('elevationCaption').textContent = [selections.frameColor, selections.exteriorColour].filter(Boolean).join(' / ') || 'Live preview';
+}
 
 function createConfigurationReference() {
   const now = new Date();
@@ -1836,6 +2152,7 @@ document.addEventListener('input', function(e) {
     checkStepReady();
   }
   if (e.target && e.target.id === 'deliveryLocation') checkStepReady();
+  updateLiveDesign();
 });
 
 document.addEventListener('click', function(e) {
@@ -1886,30 +2203,31 @@ document.addEventListener('click', function(e) {
   }
 
   checkStepReady();
+  updateLiveDesign();
 });
 
 function checkStepReady() {
   if (currentStep === 1) document.getElementById('next1').disabled = !selections.model;
   if (currentStep === 3) document.getElementById('next3').disabled = !selections.layout;
   if (currentStep === 4) document.getElementById('next4').disabled = !selections.roof;
-  if (currentStep === 5) {
-    const uvRequired = selections.kitchenUpgrades.indexOf('UV board') !== -1;
-    document.getElementById('next5').disabled = !(selections.kitchenBase && selections.kitchenFinish && selections.benchtop && (!uvRequired || selections.uvBoardFinish));
-  }
-  if (currentStep === 6) document.getElementById('next6').disabled = !(selections.bathroomShape && selections.bathroomBenchtop);
-  if (currentStep === 7) document.getElementById('next7').disabled = !(selections.wallType && selections.exteriorColour);
-  if (currentStep === 8) {
+  if (currentStep === 5) document.getElementById('next5').disabled = !selections.frameColor;
+  if (currentStep === 6) document.getElementById('next6').disabled = !(selections.wallType && selections.exteriorColour);
+  if (currentStep === 7) document.getElementById('next7').disabled = !(selections.kitchenBase && selections.kitchenFinish);
+  if (currentStep === 8) document.getElementById('next8').disabled = !selections.benchtop;
+  if (currentStep === 9) document.getElementById('next9').disabled = !(selections.bathroomShape && selections.bathroomBenchtop);
+  if (currentStep === 10) document.getElementById('next10').disabled = !(selections.flooring && selections.flooringColour);
+  if (currentStep === 11) document.getElementById('next11').disabled = !selections.bathroomUvBoard;
+  if (currentStep === 12) {
     const separateDoorColour = selections.door === 'Sliding glass door' || selections.door === 'Solid panel door';
-    document.getElementById('next8').disabled = !(selections.door && selections.windows && selections.windowColour && selections.flooring && selections.flooringColour && (!separateDoorColour || selections.doorColour));
+    document.getElementById('next12').disabled = !(selections.door && selections.windows && selections.windowColour && (!separateDoorColour || selections.doorColour));
   }
-  if (currentStep === 9) document.getElementById('next9').disabled = !document.getElementById('deliveryLocation').value.trim();
 }
 
 function updateProgress() {
   const pct = (currentStep / totalSteps) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('stepIndicator').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
-  const names = ['', 'Model Style', 'Size', 'Floor Plan', 'Roof & Terrace', 'Kitchen', 'Bathroom', 'Exterior', 'Doors & Floors', 'Extras', 'Submit'];
+  const names = ['', 'Model Style', 'Size', 'Floor Plan', 'Roof & Terrace', 'Frame Colour', 'Exterior Facade', 'Kitchen', 'Benchtop', 'Bathroom', 'Flooring', 'Bathroom Walls', 'Doors & Windows', 'Quote Request'];
   document.getElementById('stepName').textContent = names[currentStep] || '';
 }
 
@@ -1931,7 +2249,7 @@ function showStep(n) {
 
 function nextStep() {
   if (currentStep === 2) populateLayoutStep();
-  if (currentStep === 9) buildSummary();
+  if (currentStep === 12) buildSummary();
   if (currentStep < totalSteps) showStep(currentStep + 1);
 }
 
@@ -1969,15 +2287,16 @@ function buildSummary() {
     ['Size', selections.size],
     ['Layout', selections.layout],
     ['Roof / Front Verandah', selections.roof],
+    ['Frame Colour', selections.frameColor],
     ['Kitchen Layout', selections.kitchenBase],
     ['Kitchen Finish', selections.kitchenFinish],
     ['Kitchen Upgrades', kitchenUp],
-    ['UV Board Finish', selections.uvBoardFinish],
     ['Benchtop', selections.benchtop],
     ['Bathroom Base', selections.bathroomBase],
     ['Bathroom Size', selections.bathroomShape],
     ['Bathroom Upgrades', bathUp],
     ['Bathroom Stone Vanity Top', selections.bathroomBenchtop || 'Standard stone, colour to be confirmed'],
+    ['Bathroom Wall Finish', selections.bathroomUvBoard],
     ['Wall Type', selections.wallType],
     ['Exterior Colour', selections.exteriorColour],
     ['Door', selections.door],
@@ -2018,15 +2337,16 @@ function buildPrintTable() {
     ['Size', selections.size],
     ['Layout', selections.layout],
     ['Roof / Front Verandah', selections.roof],
+    ['Frame Colour', selections.frameColor],
     ['Kitchen Layout', selections.kitchenBase],
     ['Kitchen Finish', selections.kitchenFinish],
     ['Kitchen Upgrades', kitchenUp],
-    ['UV Board Finish', selections.uvBoardFinish],
     ['Benchtop Colour', selections.benchtop],
     ['Bathroom Base', selections.bathroomBase],
     ['Bathroom Size', selections.bathroomShape],
     ['Bathroom Upgrades', bathUp],
     ['Bathroom Stone Vanity Top', selections.bathroomBenchtop || 'Standard stone, colour to be confirmed'],
+    ['Bathroom Wall Finish', selections.bathroomUvBoard],
     ['Wall Type', selections.wallType],
     ['Exterior Colour', selections.exteriorColour],
     ['Entrance Door', selections.door],
@@ -2071,15 +2391,16 @@ function buildLeadPayload(cust, extras) {
     size: selections.size,
     layout: selections.layout,
     roof_terrace: selections.roof,
+    frame_colour: selections.frameColor,
     kitchen_base: selections.kitchenBase,
     kitchen_finish: selections.kitchenFinish,
     kitchen_upgrades: kitchenUp,
-    uv_board_finish: selections.uvBoardFinish || 'N/A',
     benchtop: selections.benchtop,
     bathroom_base: selections.bathroomBase,
     bathroom_shape: selections.bathroomShape,
     bathroom_upgrades: bathUp,
     bathroom_benchtop_standard_inclusion: selections.bathroomBenchtop || 'Standard stone, colour to be confirmed',
+    bathroom_wall_finish: selections.bathroomUvBoard,
     wall_type: selections.wallType,
     exterior_colour: selections.exteriorColour,
     door: selections.door,
@@ -2134,12 +2455,12 @@ Model Style: ${selections.model}
 Size: ${selections.size}
 Layout: ${selections.layout}
 Roof / Front Verandah: ${selections.roof}
+Frame Colour: ${selections.frameColor}
 
 KITCHEN
 Layout: ${selections.kitchenBase}
 Finish: ${selections.kitchenFinish}
 Upgrades: ${kitchenUp}
-UV Board Finish: ${selections.uvBoardFinish}
 Benchtop: ${selections.benchtop}
 
 BATHROOM
@@ -2147,6 +2468,7 @@ Base: ${selections.bathroomBase}
 Size: ${selections.bathroomShape}
 Upgrades: ${bathUp}
 Stone Vanity Top (standard inclusion): ${selections.bathroomBenchtop || 'Colour to be confirmed'}
+Bathroom Wall Finish: ${selections.bathroomUvBoard}
 
 EXTERIOR & FITTINGS
 Wall Type: ${selections.wallType}
@@ -2192,6 +2514,11 @@ function submitQuote() {
   }
 
   const extras = getExtraValues();
+  if (!extras.deliveryLocation) {
+    alert('Please enter the delivery address, suburb or postcode so we can calculate delivery in your quote.');
+    document.getElementById('deliveryLocation').focus();
+    return;
+  }
   const errorNote = document.getElementById('submitError');
   const btn = document.getElementById('submitBtn');
   errorNote.style.display = 'none';
@@ -2290,11 +2617,13 @@ document.addEventListener('keydown', function(event) {
 });
 
 document.getElementById('customerReviewForm').addEventListener('submit', submitCustomerReview);
+buildConfiguratorFlow();
 document.getElementById('configurationReferenceDisplay').textContent = configurationReference;
 document.getElementById('successReferenceDisplay').textContent = configurationReference;
 renderVerifiedReviews();
 
 updateProgress();
+updateLiveDesign();
 </script>
 </body>
 </html>
