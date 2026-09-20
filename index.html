@@ -119,14 +119,15 @@
   .hero-secondary:hover { background: rgba(255,255,255,0.1); }
   .home-hero-image {
     min-width: 0;
-    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
     background: #e8e9e6;
   }
   .home-hero-image img {
     width: 100%;
-    height: 100%;
+    height: auto;
     display: block;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
   }
   .info-section {
@@ -157,8 +158,7 @@
   }
   .completed-homes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   .completed-home { overflow: hidden; border-radius: 10px; background: #f5f4ef; border: 1px solid var(--border); }
-  .completed-home img { width: 100%; height: auto; aspect-ratio: 16 / 10; display: block; object-fit: cover; }
-  .completed-home:nth-child(2) img { object-fit: contain; padding: 0.7rem; background: #f7f7f5; }
+  .completed-home img { width: 100%; height: auto; aspect-ratio: 4 / 3; display: block; object-fit: contain; background: #f7f7f5; }
   .completed-home p { padding: 0.65rem 0.75rem; color: var(--muted); font-size: 0.76rem; }
   .next-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin: 1rem 0; }
   .next-step { padding: 0.85rem; border-radius: 8px; background: #f5f4ef; border: 1px solid var(--border); }
@@ -465,8 +465,9 @@
   .option-card.style-card img {
     width: 100%;
     height: auto;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    background: #f7f7f5;
     display: block;
     border-radius: 8px 8px 0 0;
   }
@@ -504,7 +505,7 @@
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 8;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     border-radius: 8px 8px 0 0;
   }
@@ -688,11 +689,11 @@
     gap: 1rem;
   }
   [data-step="1"] .option-card.style-card:not(.best-seller-card) img {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
   }
   @media (max-width: 900px) {
     .home-hero { grid-template-columns: 1fr; }
-    .home-hero-image { order: -1; aspect-ratio: 16 / 9; }
+    .home-hero-image { order: -1; }
     .inclusions-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 600px) {
@@ -704,7 +705,6 @@
     .review-dialog { min-height: 100%; border-radius: 0; }
     .rating-row { grid-template-columns: 1fr; }
     .star-button { flex: 1; min-height: 42px; }
-    .home-hero-image { aspect-ratio: 4 / 3; }
     .home-hero-copy { padding: 1.35rem; }
     .brand-lockup { width: min(320px, 82vw); height: 92px; }
     .inclusions-grid, .completed-homes-grid, .next-steps { grid-template-columns: 1fr; }
