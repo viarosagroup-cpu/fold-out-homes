@@ -1626,13 +1626,10 @@ let currentStep = 1;
 const totalSteps = 10;
 
 // Real team inbox. Confirmed 17 Sep 2026 (see claude/brand-a-push.md).
-const TEAM_EMAIL = 'enquires@foldouthomes.com.au';
+const TEAM_EMAIL = 'sales@foldouthomes.com.au';
 
-// Lead capture endpoint. Uses FormSubmit.co (no account/signup required) so
-// every "Submit Quote Request" click actually reaches the team inbox instead
-// of silently vanishing. FIRST SUBMISSION ONLY: FormSubmit sends a one-time
-// confirmation email to TEAM_EMAIL that must be clicked to activate this
-// endpoint for future submissions. See claude/brand-a-push.md for details.
+// Lead capture endpoint. The sales inbox must approve FormSubmit's one-time
+// activation email before automatic quote and review submissions are forwarded.
 const LEAD_ENDPOINT = 'https://formsubmit.co/ajax/' + TEAM_EMAIL;
 
 function createConfigurationReference() {
